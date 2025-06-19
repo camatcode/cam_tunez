@@ -43,6 +43,7 @@ config :spark,
     remove_parens?: true,
     "Ash.Resource": [
       section_order: [
+        :postgres,
         :resource,
         :code_interface,
         :actions,
@@ -97,6 +98,7 @@ config :tunez, TunezWeb.Endpoint,
 # of this file so it overrides the configuration defined above.
 config :tunez,
   ecto_repos: [Tunez.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  ash_domains: [Tunez.Music]
 
 import_config "#{config_env()}.exs"

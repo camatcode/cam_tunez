@@ -8,7 +8,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ## To figure out
 
-* Something about standalone tailwind causes "sh: 1: watchman: not found"
+* Something about standalone tailwind causes "sh: 1: watchman: not found" (probably important: OS is Linux Mint)
 
 ## Personal / Opinionated Changes
 
