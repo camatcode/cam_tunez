@@ -1,6 +1,8 @@
 defmodule TunezWeb.Router do
   use TunezWeb, :router
 
+  alias Plug.Swoosh.MailboxPreview
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -43,7 +45,7 @@ defmodule TunezWeb.Router do
       pipe_through :browser
 
       live_dashboard "/dashboard", metrics: TunezWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
+      forward "/mailbox", MailboxPreview
     end
   end
 end

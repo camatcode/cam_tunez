@@ -18,15 +18,15 @@ defmodule Tunez.DataCase do
 
   using do
     quote do
-      alias Tunez.Repo
-
+      import Ash.Test
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import Ash.Test
       import Tunez.DataCase
       import Tunez.Generator
       import Tunez.Support.Helpers
+
+      alias Tunez.Repo
     end
   end
 

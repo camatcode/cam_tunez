@@ -23,10 +23,11 @@ defmodule TunezWeb do
     quote do
       use Phoenix.Router, helpers: false
 
-      # Import common connection and controller functions to use in pipelines
-      import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
+
+      # Import common connection and controller functions to use in pipelines
+      import Plug.Conn
     end
   end
 
@@ -39,9 +40,9 @@ defmodule TunezWeb do
   def controller do
     quote do
       use Phoenix.Controller, formats: [:html, :json]
+      use Gettext, backend: TunezWeb.Gettext
 
       import Plug.Conn
-      use Gettext, backend: TunezWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -86,11 +87,11 @@ defmodule TunezWeb do
 
   defp html_helpers do
     quote do
+      use Gettext, backend: TunezWeb.Gettext
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
       import TunezWeb.CoreComponents
-      use Gettext, backend: TunezWeb.Gettext
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS
