@@ -22,6 +22,7 @@ defmodule TunezWeb.ConnCase do
   using do
     quote do
       use TunezWeb, :verified_routes
+
       import Phoenix.ConnTest, except: [get: 3, delete: 3]
       import PhoenixTest
       import Plug.Conn

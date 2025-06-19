@@ -2,6 +2,25 @@ defmodule Tunez.Music.ArtistTest do
   use Tunez.DataCase, async: true
 
   alias Tunez.Music, warn: false
+  alias Tunez.Music.Artist
+
+  describe "cam tests > " do
+    test "Creating records via a changeset" do
+      {:ok,
+       %Artist{
+         id: _,
+         name: "Valkyrie's Fury",
+         biography: "A power metal band hailing from Tallinn, Estonia",
+         inserted_at: _,
+         updated_at: _
+       }} =
+        Ash.Changeset.for_create(Artist, :create, %{
+          name: "Valkyrie's Fury",
+          biography: "A power metal band hailing from Tallinn, Estonia"
+        })
+        |> Ash.create()
+    end
+  end
 
   describe "Tunez.Music.read_artists!/0-2" do
     @tag :skip
