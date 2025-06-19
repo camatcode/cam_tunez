@@ -2,6 +2,20 @@ defmodule TunezWeb.Artists.FormLiveTest do
   use TunezWeb.ConnCase, async: true
 
   alias Tunez.Music, warn: false
+  alias Tunez.Music.Artist
+
+  describe "cam tests >" do
+    test "a form in action" do
+      name = "Best Band Ever"
+
+      form = AshPhoenix.Form.for_create(Artist, :create)
+
+      validation = AshPhoenix.Form.validate(form, %{name: name})
+      assert validation.source.valid?
+
+      assert {:ok, %Artist{name: ^name}} = AshPhoenix.Form.submit(form, params: %{name: name})
+    end
+  end
 
   describe "creating a new artist" do
     @tag skip: "Also need to change `_conn` to `conn` below"

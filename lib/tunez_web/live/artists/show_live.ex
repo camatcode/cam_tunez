@@ -7,12 +7,8 @@ defmodule TunezWeb.Artists.ShowLive do
     {:ok, socket}
   end
 
-  def handle_params(_params, _url, socket) do
-    artist = %{
-      id: "test-artist-1",
-      name: "Artist Name",
-      biography: "Sample biography content here"
-    }
+  def handle_params(%{"id" => artist_id}, _url, socket) do
+    artist = Tunez.Music.get_artist_by_id!(artist_id)
 
     albums = [
       %{
@@ -23,13 +19,11 @@ defmodule TunezWeb.Artists.ShowLive do
       }
     ]
 
-    socket =
-      socket
-      |> assign(:artist, artist)
-      |> assign(:albums, albums)
-      |> assign(:page_title, artist.name)
-
-    {:noreply, socket}
+    socket
+    |> assign(:artist, artist)
+    |> assign(:albums, albums)
+    |> assign(:page_title, artist.name)
+    |> then(&{:noreply, &1})
   end
 
   def render(assigns) do
