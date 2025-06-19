@@ -39,6 +39,7 @@ defmodule Tunez.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:quokka, "~> 2.7", only: [:dev, :test], runtime: false},
+      {:faker, "~> 0.18.0", only: :test},
       {:sourceror, "~> 1.8", only: [:dev, :test]},
       {:ash, "~> 3.0"},
       {:phoenix, "~> 1.8.0-rc.1", override: true},
@@ -78,7 +79,7 @@ defmodule Tunez.MixProject do
       setup: ["deps.get", "ash.setup", "assets.setup", "assets.build", "run priv/repo/seeds.exs"],
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       seed: [
-        # "run priv/repo/seeds/01-artists.exs",
+        "run priv/repo/seeds/01-artists.exs"
         # "run priv/repo/seeds/02-albums.exs",
         # "run priv/repo/seeds/08-tracks.exs"
       ],

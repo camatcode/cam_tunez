@@ -13,8 +13,8 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ## Personal / Opinionated Changes
 
 * Added docker compose for postgres to sandbox the database
-* Created ExUnit tests over running examples in IEX under "cam tests"
-* Added `ExUnit.configure(formatters: [JUnitFormatter, ExUnit.CLIFormatter])` in test_helper for formatting tests
+* Created ExUnit tests instead of running examples in IEX under "cam tests"
+* Added `ExUnit.configure(formatters: [ExUnit.CLIFormatter])` in test_helper
 * Added the following deps
 
 ```
@@ -26,4 +26,6 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       # opinionated styler
       {:quokka, "~> 2.7", only: [:dev, :test], runtime: false},
+      # for fuzzing input to my added tests
+      {:faker, "~> 0.18.0", only: :test},
 ```

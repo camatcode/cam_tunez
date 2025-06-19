@@ -1,24 +1,93 @@
 defmodule Tunez.Music.ArtistTest do
   use Tunez.DataCase, async: true
 
+  alias Ash.Error.Changes.Required
+  alias Ash.Error.Invalid
   alias Tunez.Music, warn: false
   alias Tunez.Music.Artist
 
   describe "cam tests > " do
-    test "Creating records via a changeset" do
+    setup do
+      name = "Valkyrie's Fury"
+      bio = "A power metal band hailing from Tallinn, Estonia"
+
+      artists =
+        Tunez.Seeder.artists()
+        |> Enum.map(&Music.create_artist!/1)
+        |> Enum.sort_by(& &1.name)
+
+      refute Enum.empty?(artists)
+
+      %{name: name, bio: bio, artists: artists}
+    end
+
+    test "Creating records via a changeset", %{name: name, bio: bio} do
       {:ok,
        %Artist{
-         id: _,
-         name: "Valkyrie's Fury",
-         biography: "A power metal band hailing from Tallinn, Estonia",
-         inserted_at: _,
-         updated_at: _
+         name: ^name,
+         biography: ^bio
        }} =
         Ash.Changeset.for_create(Artist, :create, %{
-          name: "Valkyrie's Fury",
-          biography: "A power metal band hailing from Tallinn, Estonia"
+          name: name,
+          biography: bio
         })
         |> Ash.create()
+    end
+
+    test "Validation check (pg 13)" do
+      {:error, %Invalid{errors: [%Required{field: :name}]}} =
+        Ash.Changeset.for_create(Artist, :create, %{
+          name: ""
+        })
+        |> Ash.create()
+    end
+
+    test "Music.create_artist/2", %{name: name, bio: bio} do
+      assert {:ok, %Artist{name: ^name, biography: ^bio}} =
+               Music.create_artist(%{name: name, biography: bio})
+    end
+
+    test "Music.read_artists/0", %{artists: artists} do
+      {:ok, retrieved_artists} = Music.read_artists()
+      # because Syndicate is in retrieved, but not in artists
+      assert Enum.all?(artists, &Enum.member?(retrieved_artists, &1))
+    end
+
+    test "Manual query", %{artists: [artist | _]} do
+      query =
+        Ash.Query.for_read(Artist, :read)
+        |> Ash.Query.sort(name: :asc)
+        |> Ash.Query.limit(1)
+
+      assert {:ok, [^artist]} = Ash.read(query)
+    end
+
+    test "Music.get_artist_by_id/3", %{artists: artists} do
+      Enum.each(artists, fn artist ->
+        assert {:ok, ^artist} = Music.get_artist_by_id(artist.id)
+      end)
+    end
+
+    test "Music.update_artist/3", %{artists: artists} do
+      Enum.each(artists, fn %{id: id, name: old_name} = artist ->
+        # via update_artist/3
+        new_name = Faker.Person.name()
+        assert {:ok, %{id: ^id, name: ^new_name}} = Music.update_artist(artist, %{name: new_name})
+
+        # via changeset
+        new_name = Faker.Person.name()
+
+        assert {:ok, %{id: ^id, name: ^new_name}} =
+                 artist
+                 |> Ash.Changeset.for_update(:update, %{name: new_name})
+                 |> Ash.update()
+      end)
+    end
+
+    test "Music.destroy_artist/3", %{artists: artists} do
+      Enum.each(artists, fn artist ->
+        assert :ok = Music.destroy_artist(artist)
+      end)
     end
   end
 
