@@ -26,6 +26,38 @@ defmodule TunezWeb.Artists.ShowLive do
     |> then(&{:noreply, &1})
   end
 
+  def handle_event("destroy-artist", _params, socket) do
+    socket =
+      socket.assigns.artist
+      |> Tunez.Music.destroy_artist()
+      |> case do
+        :ok ->
+          socket
+          |> put_flash(:info, "Artist deleted successfully")
+          |> push_navigate(to: ~p"/")
+
+        {:error, e} ->
+          Logger.info("Failed to delete artist: #{inspect(e)}")
+
+          socket
+          |> put_flash(:error, "Failed to delete artist")
+      end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("destroy-album", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("follow", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("unfollow", _params, socket) do
+    {:noreply, socket}
+  end
+
   def render(assigns) do
     ~H"""
     <Layouts.app {assigns}>
@@ -143,21 +175,5 @@ defmodule TunezWeb.Artists.ShowLive do
       />
     </span>
     """
-  end
-
-  def handle_event("destroy-artist", _params, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("destroy-album", _params, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("follow", _params, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("unfollow", _params, socket) do
-    {:noreply, socket}
   end
 end
