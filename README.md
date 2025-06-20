@@ -14,11 +14,11 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ### Important Changes / Possible Errata
 
-* Changed the tool-versions erlang / elixir due to hex being unable to pull `inflex` (this might be something to do with my local hex?)
 
 ### To figure out
 
-* Something about standalone tailwind causes "sh: 1: watchman: not found" (probably important: OS is Linux Mint)
+* Changed the tool-versions erlang / elixir due to hex being unable to pull `inflex` (this might be something to do with my local hex?)
+* Something about standalone tailwind causes "`sh: 1: watchman: not found`" (probably important: OS is Linux Mint)
 
 ### Personal / Style / Opinionated Changes
 
