@@ -1,6 +1,8 @@
 defmodule Tunez.Music.Artist do
   use Ash.Resource, otp_app: :tunez, domain: Tunez.Music, data_layer: AshPostgres.DataLayer
 
+  alias Tunez.Music.Album
+
   postgres do
     table "artists"
     repo Tunez.Repo
@@ -20,7 +22,12 @@ defmodule Tunez.Music.Artist do
 
     attribute :biography, :string
 
+
     create_timestamp :inserted_at
     update_timestamp :updated_at
+  end
+
+  relationships do
+    has_many :albums, Album
   end
 end

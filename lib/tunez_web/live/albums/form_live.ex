@@ -1,15 +1,64 @@
 defmodule TunezWeb.Albums.FormLive do
   use TunezWeb, :live_view
 
-  def mount(_params, _session, socket) do
-    form = %{}
+  alias Tunez.Music
 
+  def mount(%{"artist_id" => artist_id}, _session, socket) do
+    artist = Music.get_artist_by_id!(artist_id)
+    form = Music.form_to_create_album(artist.id)
+
+    socket
+    |> assign(:form, to_form(form))
+    |> assign(:artist, artist)
+    |> assign(:page_title, "Update Album")
+    |> then(&{:ok, &1})
+  end
+
+  def mount(%{"id" => album_id}, _session, socket) do
+    album = Music.get_album_by_id!(album_id)
+    artist = Music.get_artist_by_id!(album.artist_id)
+    form = Music.form_to_create_album(album)
+
+    socket
+    |> assign(:form, to_form(form))
+    |> assign(:artist, artist)
+    |> assign(:page_title, "New Album")
+    |> then(&{:ok, &1})
+  end
+
+  def handle_event("validate", %{"form" => form_data}, socket) do
+    socket
+    |> update(:form, &AshPhoenix.Form.validate(&1, form_data))
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("save", %{"form" => form_data}, socket) do
     socket =
-      socket
-      |> assign(:form, to_form(form))
-      |> assign(:page_title, "New Album")
+      case AshPhoenix.Form.submit(socket.assigns.form, params: form_data) do
+        {:ok, album} ->
+          socket
+          |> put_flash(:info, "Saved Album")
+          |> push_navigate(to: ~p"/artists/#{album.artist_id}")
 
-    {:ok, socket}
+        {:error, form} ->
+          socket
+          |> put_flash(:error, "Unable to save album")
+          |> assign(:form, form)
+      end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("add-track", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("remove-track", %{"path" => _path}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("reorder-tracks", %{"order" => _order}, socket) do
+    {:noreply, socket}
   end
 
   def render(assigns) do
@@ -27,7 +76,7 @@ defmodule TunezWeb.Albums.FormLive do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input name="artist_id" label="Artist" value="" disabled />
+        <.input name="artist_id" label="Artist" value={@artist.name} disabled />
         <div class="sm:flex gap-8 space-y-8 md:space-y-0">
           <div class="sm:w-3/4"><.input field={form[:name]} label="Name" /></div>
           <div class="sm:w-1/4">
@@ -91,25 +140,5 @@ defmodule TunezWeb.Albums.FormLive do
       Add Track
     </.button_link>
     """
-  end
-
-  def handle_event("validate", %{"form" => _form_data}, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("save", %{"form" => _form_data}, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("add-track", _params, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("remove-track", %{"path" => _path}, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("reorder-tracks", %{"order" => _order}, socket) do
-    {:noreply, socket}
   end
 end
