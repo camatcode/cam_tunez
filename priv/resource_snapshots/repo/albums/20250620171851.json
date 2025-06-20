@@ -92,7 +92,7 @@
           "strategy": null
         },
         "name": "albums_artist_id_fkey",
-        "on_delete": null,
+        "on_delete": "delete",
         "on_update": null,
         "primary_key?": true,
         "schema": "public",
@@ -109,8 +109,27 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "C084BBBF309B1CCD14179ACEB4E0F9A07E7D159923BA0DB185DFA80A7EE74A6C",
-  "identities": [],
+  "hash": "4A0605E9725F591FCAE6A92619BEDBD9A8D38FEBBB09BC80205D1CC29AFF853E",
+  "identities": [
+    {
+      "all_tenants?": false,
+      "base_filter": null,
+      "index_name": "albums_unique_album_names_per_artist_index",
+      "keys": [
+        {
+          "type": "atom",
+          "value": "name"
+        },
+        {
+          "type": "atom",
+          "value": "artist_id"
+        }
+      ],
+      "name": "unique_album_names_per_artist",
+      "nils_distinct?": true,
+      "where": null
+    }
+  ],
   "multitenancy": {
     "attribute": null,
     "global": null,

@@ -1,6 +1,8 @@
 defmodule TunezWeb.Artists.ShowLive do
   use TunezWeb, :live_view
 
+  alias Tunez.Music
+
   require Logger
 
   def mount(_params, _session, socket) do
@@ -8,7 +10,7 @@ defmodule TunezWeb.Artists.ShowLive do
   end
 
   def handle_params(%{"id" => artist_id}, _url, socket) do
-    artist = Tunez.Music.get_artist_by_id!(artist_id, load: [:albums])
+    artist = get_artist(artist_id)
 
     socket
     |> assign(:artist, artist)
@@ -19,7 +21,7 @@ defmodule TunezWeb.Artists.ShowLive do
   def handle_event("destroy-artist", _params, socket) do
     socket =
       socket.assigns.artist
-      |> Tunez.Music.destroy_artist()
+      |> Music.destroy_artist()
       |> case do
         :ok ->
           socket
@@ -36,7 +38,21 @@ defmodule TunezWeb.Artists.ShowLive do
     {:noreply, socket}
   end
 
-  def handle_event("destroy-album", _params, socket) do
+  def handle_event("destroy-album", %{"id" => album_id}, socket) do
+    socket =
+      case Music.destroy_album(album_id) do
+        :ok ->
+          socket
+          |> update(:artist, &get_artist/1)
+          |> put_flash(:info, "Album deleted successfully")
+
+        {:error, error} ->
+          Logger.info("Could not delete album '#{album_id}: #{inspect(error)}'")
+
+          socket
+          |> put_flash(:error, "Could not delete album")
+      end
+
     {:noreply, socket}
   end
 
@@ -144,6 +160,12 @@ defmodule TunezWeb.Artists.ShowLive do
     text
     |> String.split("\n", trim: false)
     |> Enum.intersperse(Phoenix.HTML.raw({:safe, "<br/>"}))
+  end
+
+  defp get_artist(%{id: artist_id}), do: get_artist(artist_id)
+
+  defp get_artist(artist_id) do
+    Music.get_artist_by_id!(artist_id, load: [:albums])
   end
 
   def follow_toggle(assigns) do

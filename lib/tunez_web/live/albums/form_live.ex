@@ -15,13 +15,12 @@ defmodule TunezWeb.Albums.FormLive do
   end
 
   def mount(%{"id" => album_id}, _session, socket) do
-    album = Music.get_album_by_id!(album_id)
-    artist = Music.get_artist_by_id!(album.artist_id)
+    album = Music.get_album_by_id!(album_id, load: [:artist])
     form = Music.form_to_create_album(album)
 
     socket
     |> assign(:form, to_form(form))
-    |> assign(:artist, artist)
+    |> assign(:artist, album.artist)
     |> assign(:page_title, "New Album")
     |> then(&{:ok, &1})
   end
