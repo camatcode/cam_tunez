@@ -28,9 +28,9 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 * Added the following deps
 
 ```
-      # for generating docs
+      # I prefer mix docs over IEx's `h`
       {:ex_doc, "~> 0.38", only: :dev, runtime: false},
-      # SAST
+      # static code analysis
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       # spec check
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
@@ -44,8 +44,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ## Thoughts / Pitfalls / Review
 
 * **Pitfall**: At least in en-US, *D* in [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) stands for *delete*
-  * I mention it only because it tripped me several times - muscle memory is hard to unlearn 😆
   * See this Issue from Zach Daniel to learn more: https://github.com/ash-project/ash/issues/165
-* On page 42, when I was testing out the album form, I thought *hmm those albums aren't showing up right*, 
+* **Pitfall**: On page 42, when I was testing out the album form, I thought *hmm those albums aren't showing up right*, 
 went on a side-quest with show_live, discovered the `load: albums` on my own, then literally page 43 said, to do exactly that.
-That's my own damn fault for not reading carefully - but it was validating I had the right idea.
+  * That's my own damn fault for not reading carefully - but it was validating I had the right idea.
