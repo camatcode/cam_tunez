@@ -1,6 +1,6 @@
 defmodule Tunez.Music do
   use Ash.Domain,
-    otp_app: :tunez
+    otp_app: :tunez, extensions: [AshPhoenix]
 
   alias Tunez.Music.Artist
 

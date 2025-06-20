@@ -14,6 +14,14 @@ defmodule TunezWeb.Artists.FormLiveTest do
       assert validation.source.valid?
 
       assert {:ok, %Artist{name: ^name}} = AshPhoenix.Form.submit(form, params: %{name: name})
+
+      # using the extension: AshPhoenix
+
+      name = Faker.Person.name()
+      form = Music.form_to_create_artist()
+      validation = AshPhoenix.Form.validate(form, %{name: name})
+      assert validation.source.valid?
+      assert {:ok, %Artist{name: ^name}} = AshPhoenix.Form.submit(form, params: %{name: name})
     end
   end
 
