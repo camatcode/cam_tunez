@@ -1,15 +1,48 @@
 defmodule TunezWeb.Artists.FormLive do
   use TunezWeb, :live_view
 
+  def mount(%{"id" => id}, _session, socket) do
+    form =
+      id
+      |> Tunez.Music.get_artist_by_id!()
+      |> Tunez.Music.form_to_update_artist()
+
+    socket
+    |> assign(form: form)
+    |> assign(:page_title, "Update Artist")
+    |> then(&{:ok, &1})
+  end
+
   def mount(_params, _session, socket) do
-    form = %{}
+    form = Tunez.Music.form_to_create_artist()
 
+    socket
+    |> assign(:form, to_form(form))
+    |> assign(:page_title, "New Artist")
+    |> then(&{:ok, &1})
+  end
+
+  def handle_event("validate", %{"form" => form_data}, socket) do
+    socket
+    |> update(:form, &AshPhoenix.Form.validate(&1, form_data))
+    |> then(&{:noreply, &1})
+  end
+
+  def handle_event("save", %{"form" => form_data}, socket) do
     socket =
-      socket
-      |> assign(:form, to_form(form))
-      |> assign(:page_title, "New Artist")
+      case AshPhoenix.Form.submit(socket.assigns.form, params: form_data) do
+        {:ok, artist} ->
+          socket
+          |> put_flash(:info, "Artist saved successfully")
+          |> push_navigate(to: ~p"/artists/#{artist}")
 
-    {:ok, socket}
+        {:error, form} ->
+          socket
+          |> put_flash(:error, "Failed to save artist")
+          |> assign(:form, form)
+      end
+
+    {:noreply, socket}
   end
 
   def render(assigns) do
@@ -35,13 +68,5 @@ defmodule TunezWeb.Artists.FormLive do
       </.simple_form>
     </Layouts.app>
     """
-  end
-
-  def handle_event("validate", %{"form" => _form_data}, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("save", %{"form" => _form_data}, socket) do
-    {:noreply, socket}
   end
 end

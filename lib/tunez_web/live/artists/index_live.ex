@@ -4,25 +4,17 @@ defmodule TunezWeb.Artists.IndexLive do
   require Logger
 
   def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> assign(:page_title, "Artists")
-
-    {:ok, socket}
+    socket
+    |> assign(:page_title, "Artists")
+    |> then(&{:ok, &1})
   end
 
   def handle_params(_params, _url, socket) do
-    artists = [
-      %{id: "test-artist-1", name: "Test Artist 1"},
-      %{id: "test-artist-2", name: "Test Artist 2"},
-      %{id: "test-artist-3", name: "Test Artist 3"}
-    ]
+    artists = Tunez.Music.read_artists!()
 
-    socket =
-      socket
-      |> assign(:artists, artists)
-
-    {:noreply, socket}
+    socket
+    |> assign(:artists, artists)
+    |> then(&{:noreply, &1})
   end
 
   def render(assigns) do

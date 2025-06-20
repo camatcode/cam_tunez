@@ -7,12 +7,8 @@ defmodule TunezWeb.Artists.ShowLive do
     {:ok, socket}
   end
 
-  def handle_params(_params, _url, socket) do
-    artist = %{
-      id: "test-artist-1",
-      name: "Artist Name",
-      biography: "Sample biography content here"
-    }
+  def handle_params(%{"id" => artist_id}, _url, socket) do
+    artist = Tunez.Music.get_artist_by_id!(artist_id)
 
     albums = [
       %{
@@ -23,12 +19,42 @@ defmodule TunezWeb.Artists.ShowLive do
       }
     ]
 
-    socket =
-      socket
-      |> assign(:artist, artist)
-      |> assign(:albums, albums)
-      |> assign(:page_title, artist.name)
+    socket
+    |> assign(:artist, artist)
+    |> assign(:albums, albums)
+    |> assign(:page_title, artist.name)
+    |> then(&{:noreply, &1})
+  end
 
+  def handle_event("destroy-artist", _params, socket) do
+    socket =
+      socket.assigns.artist
+      |> Tunez.Music.destroy_artist()
+      |> case do
+        :ok ->
+          socket
+          |> put_flash(:info, "Artist deleted successfully")
+          |> push_navigate(to: ~p"/")
+
+        {:error, e} ->
+          Logger.info("Failed to delete artist: #{inspect(e)}")
+
+          socket
+          |> put_flash(:error, "Failed to delete artist")
+      end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("destroy-album", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("follow", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("unfollow", _params, socket) do
     {:noreply, socket}
   end
 
@@ -149,21 +175,5 @@ defmodule TunezWeb.Artists.ShowLive do
       />
     </span>
     """
-  end
-
-  def handle_event("destroy-artist", _params, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("destroy-album", _params, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("follow", _params, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("unfollow", _params, socket) do
-    {:noreply, socket}
   end
 end
