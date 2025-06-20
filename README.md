@@ -10,6 +10,8 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
   * [Personal / Style / Opinionated](#personal--style--opinionated-changes)
 * [Thoughts](#thoughts--pitfalls--review)
 
+## Changes 
+
 ### Important Changes / Possible Errata
 
 * Changed the tool-versions erlang / elixir due to hex being unable to pull `inflex`
@@ -38,7 +40,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ```
 
 
-### Thoughts / Pitfalls / Review
+## Thoughts / Pitfalls / Review
 
 * **Pitfall**: At least in en-US, *D* in [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) stands for *delete*
   * I mention it only because it tripped me several times - muscle memory is hard to unlearn 😆
