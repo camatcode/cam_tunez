@@ -44,6 +44,8 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ## Thoughts / Pitfalls / Review
 
+### Chapter 1
+
 * **Pitfall**: At least in en-US, *D* in [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) stands for *delete*
   * See this Issue from Zach Daniel to learn more: https://github.com/ash-project/ash/issues/165
 
