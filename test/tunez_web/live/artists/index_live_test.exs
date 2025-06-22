@@ -1,6 +1,49 @@
 defmodule TunezWeb.Artists.IndexLiveTest do
   use TunezWeb.ConnCase, async: true
 
+  alias Tunez.Music
+  alias TunezWeb.Artists.IndexLive
+
+  describe "cam tests >" do
+
+    setup do
+      name = "Valkyrie's Fury"
+      bio = "A power metal band hailing from Tallinn, Estonia"
+
+      artists =
+        Tunez.Seeder.artists()
+        |> Enum.map(&Music.create_artist!/1)
+        |> Enum.sort_by(& &1.name)
+
+      albums =
+        Tunez.Seeder.albums()
+        |> Enum.map(fn album ->
+          artist = Enum.random(artists)
+
+          album =
+            Map.put(album, :artist_id, artist.id)
+            |> Map.delete(:artist_name)
+            |> Map.delete(:tracks)
+
+          Music.create_album!(album)
+        end)
+
+      refute Enum.empty?(artists)
+
+      %{name: name, bio: bio, artists: artists, albums: albums}
+    end
+
+    test "Pagination", _state do
+      page = Music.search_artists!("a")
+
+      [sort_by: "name", q: "a"] =
+        IndexLive.query_string(page, "a", "name", "prev")
+
+      [sort_by: "-inserted_at", q: "a", limit: 12, offset: 12] =
+        IndexLive.query_string(page, "a", "-inserted_at", "next")
+    end
+  end
+
   describe "render/1" do
     @tag skip: "Also need to change `_conn` to `conn` below"
     test "can view a list of artists", %{conn: _conn} do

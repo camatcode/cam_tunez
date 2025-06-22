@@ -115,9 +115,24 @@ defmodule Tunez.Music.ArtistTest do
         |> Ash.read()
     end
 
-    test "Sorting Artists", _state do
-      {:ok, [%{name: "Nights in the Nullarbor"}, %{name: "The Lost Keys"}]} =
-        Music.search_artists("the", query: [sort: [name: :asc]])
+    test "Sorting Artists / Pagination check", _state do
+      {:ok,
+       %{
+         results: [%{name: "Nights in the Nullarbor"}, %{name: "The Lost Keys"}],
+         limit: 12,
+         offset: 0,
+         more?: false
+       }} =
+        Music.search_artists("the", query: [sort_input: "name"])
+
+      {:ok,
+       %{
+         results: [%{name: "The Lost Keys"}, %{name: "Nights in the Nullarbor"}],
+         limit: 12,
+         offset: 0,
+         more?: false
+       }} =
+        Music.search_artists("the", query: [sort_input: "-name"])
     end
   end
 
