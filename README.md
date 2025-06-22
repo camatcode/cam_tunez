@@ -64,6 +64,6 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ### Chapter 4
 
-* I love the light touch of `mix ash.extend` - I **despise** removing things from generated code, perfectly fine with adding things after. It doesn't get in the eway.
+* I love the light touch of `mix ash.extend` - I **despise** removing things from generated code, perfectly fine with adding things after. It doesn't get in the way.
 
 <!-- page 65 -->
