@@ -20,6 +20,8 @@ config :ash,
   read_action_after_action_hooks_in_order?: true,
   bulk_actions_default_to_errors?: true
 
+config :ash_graphql, authorize_update_destroy_with_error?: true
+
 config :ash_json_api,
   show_public_calculations_when_loaded?: false,
   authorize_update_destroy_with_error?: true
@@ -51,6 +53,7 @@ config :spark,
     remove_parens?: true,
     "Ash.Resource": [
       section_order: [
+        :graphql,
         :json_api,
         :postgres,
         :resource,
@@ -70,7 +73,15 @@ config :spark,
       ]
     ],
     "Ash.Domain": [
-      section_order: [:json_api, :resources, :policies, :authorization, :domain, :execution]
+      section_order: [
+        :graphql,
+        :json_api,
+        :resources,
+        :policies,
+        :authorization,
+        :domain,
+        :execution
+      ]
     ]
   ]
 
