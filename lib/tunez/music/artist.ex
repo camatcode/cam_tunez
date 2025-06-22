@@ -34,7 +34,7 @@ defmodule Tunez.Music.Artist do
       pagination offset?: true, default_limit: 12
 
       # if you *always* wanted to load these properties
-      # default_options on your method may be a better way
+      # default_options was the route taken instead
       # prepare build(:load [:album_count, :latest_album_year_released, :cover_image_url])
     end
   end
