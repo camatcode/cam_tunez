@@ -23,7 +23,7 @@ defmodule TunezWeb.Layouts do
               class="w-8 h-8 bg-accent-400 inline-block align-middle"
             />
             <span class="text-2xl font-bold text-accent-400 inline-block align-middle mb-1 ml-1">
-              Tunez
+              CamTunez
             </span>
           </.link>
         </div>

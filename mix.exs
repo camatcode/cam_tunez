@@ -10,7 +10,7 @@ defmodule Tunez.MixProject do
       start_permanent: Mix.env() == :prod,
       consolidate_protocols: Mix.env() != :dev,
       aliases: aliases(),
-      deps: deps(),
+      deps: cam_deps() ++ deps(),
       listeners: [Phoenix.CodeReloader]
     ]
   end
@@ -29,18 +29,27 @@ defmodule Tunez.MixProject do
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
+  defp cam_deps do
+    [
+      {:ex_doc, "~> 0.38", only: :dev, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:quokka, "~> 2.7", only: [:dev, :test], runtime: false},
+      {:faker, "~> 0.18.0", only: :test}
+    ]
+  end
+
   # Specifies your project dependencies.
   #
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:absinthe_phoenix, "~> 2.0"},
+      {:ash_graphql, "~> 1.0"},
+      {:open_api_spex, "~> 3.0"},
+      {:ash_json_api, "~> 1.0"},
       {:ash_phoenix, "~> 2.0"},
       {:ash_postgres, "~> 2.0"},
-      {:ex_doc, "~> 0.38", only: :dev, runtime: false},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:quokka, "~> 2.7", only: [:dev, :test], runtime: false},
-      {:faker, "~> 0.18.0", only: :test},
       {:sourceror, "~> 1.8", only: [:dev, :test]},
       {:ash, "~> 3.0"},
       {:phoenix, "~> 1.8.0-rc.1", override: true},

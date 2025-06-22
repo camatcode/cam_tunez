@@ -1,7 +1,13 @@
 defmodule TunezWeb.Router do
   use TunezWeb, :router
 
+  alias Absinthe.Plug.GraphiQL
+  alias OpenApiSpex.Plug.SwaggerUI
   alias Plug.Swoosh.MailboxPreview
+
+  pipeline :graphql do
+    plug AshGraphql.Plug
+  end
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -14,6 +20,27 @@ defmodule TunezWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  scope "/gql" do
+    pipe_through [:graphql]
+
+    forward "/playground", GraphiQL,
+      schema: Module.concat(["TunezWeb.GraphqlSchema"]),
+      socket: Module.concat(["TunezWeb.GraphqlSocket"]),
+      interface: :simple
+
+    forward "/", Absinthe.Plug, schema: Module.concat(["TunezWeb.GraphqlSchema"])
+  end
+
+  scope "/api/json" do
+    pipe_through [:api]
+
+    forward "/swaggerui", SwaggerUI,
+      path: "/api/json/open_api",
+      default_model_expand_depth: 4
+
+    forward "/", TunezWeb.AshJsonApiRouter
   end
 
   scope "/", TunezWeb do

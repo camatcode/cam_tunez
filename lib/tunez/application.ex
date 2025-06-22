@@ -5,6 +5,8 @@ defmodule Tunez.Application do
 
   use Application
 
+  alias AshGraphql.Subscription.Batcher
+
   @impl true
   def start(_type, _args) do
     children = [
@@ -17,7 +19,9 @@ defmodule Tunez.Application do
       # Start a worker by calling: Tunez.Worker.start_link(arg)
       # {Tunez.Worker, arg},
       # Start to serve requests, typically the last entry
-      TunezWeb.Endpoint
+      TunezWeb.Endpoint,
+      {Absinthe.Subscription, TunezWeb.Endpoint},
+      Batcher
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

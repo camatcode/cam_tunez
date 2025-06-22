@@ -1,8 +1,30 @@
 defmodule Tunez.Music.Artist do
-  use Ash.Resource, otp_app: :tunez, domain: Tunez.Music, data_layer: AshPostgres.DataLayer
+  use Ash.Resource,
+    otp_app: :tunez,
+    domain: Tunez.Music,
+    data_layer: AshPostgres.DataLayer,
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
 
   alias Tunez.Music.Album
   alias Tunez.Music.Changes.UpdatePreviousNames
+
+  graphql do
+    type :artist
+
+    filterable_filters([
+      :album_count,
+      :cover_image_url,
+      :inserted_at,
+      :latest_album_year_released,
+      :updated_at
+    ])
+  end
+
+  json_api do
+    type "artist"
+    includes [:albums]
+    derive_filter? false
+  end
 
   postgres do
     table "artists"
@@ -11,6 +33,10 @@ defmodule Tunez.Music.Artist do
     custom_indexes do
       index "name gin_trgm_ops", name: "artists_name_gin_index", using: "GIN"
     end
+  end
+
+  resource do
+    description "A person or some folks that make and release music"
   end
 
   actions do
@@ -25,7 +51,10 @@ defmodule Tunez.Music.Artist do
     end
 
     read :search do
+      description "Lists Artists, optionally filtering by name"
+
       argument :query, :ci_string do
+        description "Return only Artists with names including the given value"
         constraints allow_empty?: true
         default ""
       end
@@ -34,7 +63,7 @@ defmodule Tunez.Music.Artist do
       pagination offset?: true, default_limit: 12
 
       # if you *always* wanted to load these properties
-      # default_options on your method may be a better way
+      # default_options was the route taken instead
       # prepare build(:load [:album_count, :latest_album_year_released, :cover_image_url])
     end
   end
@@ -47,10 +76,13 @@ defmodule Tunez.Music.Artist do
       public? true
     end
 
-    attribute :biography, :string
+    attribute :biography, :string do
+      public? true
+    end
 
     attribute :previous_names, {:array, :string} do
       default []
+      public? true
     end
 
     create_timestamp :inserted_at, public?: true
@@ -60,6 +92,7 @@ defmodule Tunez.Music.Artist do
   relationships do
     has_many :albums, Album do
       sort year_released: :desc
+      public? true
     end
   end
 
