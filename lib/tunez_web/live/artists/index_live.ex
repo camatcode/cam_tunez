@@ -13,45 +13,24 @@ defmodule TunezWeb.Artists.IndexLive do
 
   def handle_params(params, _url, socket) do
     query_text = Map.get(params, "q", "")
+    sort_by = Map.get(params, "sort_by") |> validate_sort_by()
     artists = Music.search_artists!(query_text)
 
     socket
+    |> assign(:sort_by, sort_by)
     |> assign(:query_text, query_text)
     |> assign(:artists, artists)
     |> then(&{:noreply, &1})
   end
 
-  def render(assigns) do
-    ~H"""
-    <Layouts.app {assigns}>
-      <.header responsive={false}>
-        <.h1>Artists</.h1>
-        <:action>
-          <.search_box
-            query={@query_text}
-            method="get"
-            data-role="artist-search"
-            phx-submit="search" />
-        </:action>
-        <:action>
-          <.button_link navigate={~p"/artists/new"} kind="primary">
-            New Artist
-          </.button_link>
-        </:action>
-      </.header>
+  def handle_event("change-sort", %{"sort_by" => sort_by}, socket) do
+    params = remove_empty(%{q: socket.assigns.query_text, sort_by: sort_by})
+    {:noreply, push_patch(socket, to: ~p"/?#{params}")}
+  end
 
-      <div :if={@artists == []} class="p-8 text-center">
-        <.icon name="hero-face-frown" class="w-32 h-32 bg-gray-300" />
-        <br /> No artist data to display!
-      </div>
-
-      <ul class="gap-6 lg:gap-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-        <li :for={artist <- @artists}>
-          <.artist_card artist={artist} />
-        </li>
-      </ul>
-    </Layouts.app>
-    """
+  def handle_event("search", %{"query" => query}, socket) do
+    params = remove_empty(%{q: query, sort_by: socket.assigns.sort_by})
+    {:noreply, push_patch(socket, to: ~p"/?#{params}")}
   end
 
   def artist_card(assigns) do
@@ -176,21 +155,41 @@ defmodule TunezWeb.Artists.IndexLive do
     Enum.filter(params, fn {_key, val} -> val != "" end)
   end
 
-  def handle_event("change-sort", %{"sort_by" => sort_by}, socket) do
-    params = remove_empty(%{q: socket.assigns.query_text, sort_by: sort_by})
-    {:noreply, push_patch(socket, to: ~p"/?#{params}")}
-  end
-
-  def handle_event("search", %{"query" => query}, socket) do
-    params = remove_empty(%{q: query})
-    {:noreply, push_patch(socket, to: ~p"/?#{params}")}
-  end
-
   def round_count(number) do
     case number do
       n when n >= 1_000_000 -> "#{Float.round(n / 1_000_000, 1)}M"
       n when n >= 1_000 -> "#{Float.round(n / 1_000, 1)}K"
       n -> n
     end
+  end
+
+  def render(assigns) do
+    ~H"""
+    <Layouts.app {assigns}>
+      <.header responsive={false}>
+        <.h1>Artists</.h1>
+        <:action><.sort_changer selected={@sort_by} /></:action>
+        <:action>
+          <.search_box query={@query_text} method="get" data-role="artist-search" phx-submit="search" />
+        </:action>
+        <:action>
+          <.button_link navigate={~p"/artists/new"} kind="primary">
+            New Artist
+          </.button_link>
+        </:action>
+      </.header>
+
+      <div :if={@artists == []} class="p-8 text-center">
+        <.icon name="hero-face-frown" class="w-32 h-32 bg-gray-300" />
+        <br /> No artist data to display!
+      </div>
+
+      <ul class="gap-6 lg:gap-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        <li :for={artist <- @artists}>
+          <.artist_card artist={artist} />
+        </li>
+      </ul>
+    </Layouts.app>
+    """
   end
 end

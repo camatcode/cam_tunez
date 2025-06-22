@@ -114,6 +114,11 @@ defmodule Tunez.Music.ArtistTest do
         Ash.Query.for_read(Artist, :search, %{query: "co"})
         |> Ash.read()
     end
+
+    test "Sorting Artists", _state do
+      {:ok, [%{name: "Nights in the Nullarbor"}, %{name: "The Lost Keys"}]} =
+        Music.search_artists("the", query: [sort: [name: :asc]])
+    end
   end
 
   describe "Tunez.Music.read_artists!/0-2" do
