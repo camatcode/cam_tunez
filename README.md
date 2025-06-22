@@ -15,7 +15,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ### Important Changes / Possible Errata
 
 
-* **Pitfall**: (~ page 54 / Chp 2) When defining the `previous_names` logic for artist, you gotta remove the `defaults` for `:update` (e.g to `defaults [:create, :read, :destroy]`) 
+* ‼️ : (~ page 54 / Chp 2) When defining the `previous_names` logic for artist, you gotta remove the `defaults` for `:update` (e.g to `defaults [:create, :read, :destroy]`) 
 
 ### To figure out
 
@@ -47,12 +47,12 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ### Chapter 1
 
-* **Pitfall**:  *D* in [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) usually stands for *delete*
+* ⚠️:  *D* in [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) usually stands for *delete*
   * See this Issue from Zach Daniel to learn more: https://github.com/ash-project/ash/issues/165
 
 ### Chapter 2 
 
-* **Pitfall**: On page 42, when I was testing out the album form, I thought *hmm those albums aren't showing up right*, 
+* ⚠️ : On page 42, when I was testing out the album form, I thought *hmm those albums aren't showing up right*, 
   * went on a side-quest with show_live, 
   * discovered the `load: albums` on my own, 
   * then literally next page said, to do exactly that.
@@ -60,10 +60,10 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
  
 ### Chapter 3
 
-* [Preparations](https://hexdocs.pm/ash/preparations.html) are super nice
+* 😎 [Preparations](https://hexdocs.pm/ash/preparations.html) are super nice
 
 ### Chapter 4
 
-* I love the light touch of `mix ash.extend` - I **despise** removing things from generated code, perfectly fine with adding things after. It doesn't get in the way.
+* 😎 I love the light touch of `mix ash.extend` - I **despise** removing things from generated code, perfectly fine with adding things after. It doesn't get in the way.
 
 <!-- page 65 -->
