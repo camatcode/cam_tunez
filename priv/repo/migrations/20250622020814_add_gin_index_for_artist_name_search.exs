@@ -1,4 +1,4 @@
-defmodule Tunez.Repo.Migrations.MigrateResources1 do
+defmodule Tunez.Repo.Migrations.AddGinIndexForArtistNameSearch do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -11,9 +11,13 @@ defmodule Tunez.Repo.Migrations.MigrateResources1 do
     alter table(:artists) do
       add :previous_names, {:array, :text}, default: []
     end
+
+    create index(:artists, ["name gin_trgm_ops"], name: "artists_name_gin_index", using: "GIN")
   end
 
   def down do
+    drop_if_exists index(:artists, ["name gin_trgm_ops"], name: "artists_name_gin_index")
+
     alter table(:artists) do
       remove :previous_names
     end

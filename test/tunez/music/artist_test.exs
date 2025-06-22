@@ -16,9 +16,22 @@ defmodule Tunez.Music.ArtistTest do
         |> Enum.map(&Music.create_artist!/1)
         |> Enum.sort_by(& &1.name)
 
+      albums =
+        Tunez.Seeder.albums()
+        |> Enum.map(fn album ->
+          artist = Enum.random(artists)
+
+          album =
+            Map.put(album, :artist_id, artist.id)
+            |> Map.delete(:artist_name)
+            |> Map.delete(:tracks)
+
+          Music.create_album!(album)
+        end)
+
       refute Enum.empty?(artists)
 
-      %{name: name, bio: bio, artists: artists}
+      %{name: name, bio: bio, artists: artists, albums: albums}
     end
 
     test "Creating records via a changeset", %{name: name, bio: bio} do
@@ -88,6 +101,18 @@ defmodule Tunez.Music.ArtistTest do
       Enum.each(artists, fn artist ->
         assert :ok = Music.destroy_artist(artist)
       end)
+    end
+
+    test "filters with expressions", _state do
+      require Ash.Query
+
+      {:ok, [%{name: "Eternal Tides"}]} =
+        Ash.Query.filter(Music.Album, year_released == 2024)
+        |> Ash.read()
+
+      {:ok, [%{name: "Crystal Cove"}]} =
+        Ash.Query.for_read(Artist, :search, %{query: "co"})
+        |> Ash.read()
     end
   end
 

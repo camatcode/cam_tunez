@@ -1,6 +1,8 @@
 defmodule TunezWeb.Artists.IndexLive do
   use TunezWeb, :live_view
 
+  alias Tunez.Music
+
   require Logger
 
   def mount(_params, _session, socket) do
@@ -9,10 +11,12 @@ defmodule TunezWeb.Artists.IndexLive do
     |> then(&{:ok, &1})
   end
 
-  def handle_params(_params, _url, socket) do
-    artists = Tunez.Music.read_artists!()
+  def handle_params(params, _url, socket) do
+    query_text = Map.get(params, "q", "")
+    artists = Music.search_artists!(query_text)
 
     socket
+    |> assign(:query_text, query_text)
     |> assign(:artists, artists)
     |> then(&{:noreply, &1})
   end
@@ -22,6 +26,13 @@ defmodule TunezWeb.Artists.IndexLive do
     <Layouts.app {assigns}>
       <.header responsive={false}>
         <.h1>Artists</.h1>
+        <:action>
+          <.search_box
+            query={@query_text}
+            method="get"
+            data-role="artist-search"
+            phx-submit="search" />
+        </:action>
         <:action>
           <.button_link navigate={~p"/artists/new"} kind="primary">
             New Artist
