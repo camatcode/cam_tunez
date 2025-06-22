@@ -24,10 +24,10 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ### Personal / Style / Opinionated Changes
 
-* Added docker compose for postgres to sandbox the database
-* Created ExUnit tests instead of running examples in IEX (put under `cam tests`)
+* **Infrastructure**: Added docker compose for postgres to sandbox the database
+* **Preference**: Created ExUnit tests instead of running examples in IEX (put under `cam tests`)
 * **Style**: `render(assigns)` functions go at the bottom - I have no clue where I picked this style up, but I can't live without it.
-* Added the following deps
+* **Helpers**: Added the following deps
 
 ```
       # I prefer `mix docs` over IEx's `h`
