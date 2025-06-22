@@ -71,6 +71,9 @@ defmodule TunezWeb.Artists.ShowLive do
         <.h1>
           {@artist.name}
         </.h1>
+        <:subtitle :if={!Enum.empty?(@artist.previous_names)}>
+          FKA: {Enum.join(@artist.previous_names, ", ")}
+        </:subtitle>
         <:action>
           <.button_link
             kind="error"

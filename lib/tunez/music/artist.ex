@@ -2,6 +2,7 @@ defmodule Tunez.Music.Artist do
   use Ash.Resource, otp_app: :tunez, domain: Tunez.Music, data_layer: AshPostgres.DataLayer
 
   alias Tunez.Music.Album
+  alias Tunez.Music.Changes.UpdatePreviousNames
 
   postgres do
     table "artists"
@@ -9,8 +10,15 @@ defmodule Tunez.Music.Artist do
   end
 
   actions do
-    defaults [:create, :read, :update, :destroy]
+    defaults [:create, :read, :destroy]
     default_accept [:name, :biography]
+
+    update :update do
+      require_atomic? false
+      accept [:name, :biography]
+
+      change UpdatePreviousNames, where: [changing(:name)]
+    end
   end
 
   attributes do
