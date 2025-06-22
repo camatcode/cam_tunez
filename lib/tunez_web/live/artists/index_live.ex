@@ -14,7 +14,13 @@ defmodule TunezWeb.Artists.IndexLive do
   def handle_params(params, _url, socket) do
     query_text = Map.get(params, "q", "")
     sort_by = Map.get(params, "sort_by") |> validate_sort_by()
-    page = Music.search_artists!(query_text, query: [sort_input: sort_by])
+    page_params = AshPhoenix.LiveView.page_from_params(params, 12)
+
+    page =
+      Music.search_artists!(query_text,
+        query: [sort_input: sort_by],
+        page: page_params
+      )
 
     socket
     |> assign(:sort_by, sort_by)
@@ -94,7 +100,7 @@ defmodule TunezWeb.Artists.IndexLive do
         data-role="previous-page"
         kind="primary"
         inverse
-        path={~p"/?#{query_string(@page, @query_text, @sort_by, "prev")}"}
+        patch={~p"/?#{query_string(@page, @query_text, @sort_by, "prev")}"}
         disabled={!AshPhoenix.LiveView.prev_page?(@page)}
       >
         « Previous
@@ -103,7 +109,7 @@ defmodule TunezWeb.Artists.IndexLive do
         data-role="next-page"
         kind="primary"
         inverse
-        path={~p"/?#{query_string(@page, @query_text, @sort_by, "next")}"}
+        patch={~p"/?#{query_string(@page, @query_text, @sort_by, "next")}"}
         disabled={!AshPhoenix.LiveView.next_page?(@page)}
       >
         Next »
@@ -113,7 +119,7 @@ defmodule TunezWeb.Artists.IndexLive do
   end
 
   def query_string(page, query_text, sort_by, which) do
-    case AshPhoenix.LiveView.page_link_params(page, which) |> IO.inspect() do
+    case AshPhoenix.LiveView.page_link_params(page, which) do
       :invalid -> []
       list -> list
     end

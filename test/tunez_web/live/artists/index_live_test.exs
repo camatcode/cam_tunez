@@ -5,7 +5,6 @@ defmodule TunezWeb.Artists.IndexLiveTest do
   alias TunezWeb.Artists.IndexLive
 
   describe "cam tests >" do
-
     setup do
       name = "Valkyrie's Fury"
       bio = "A power metal band hailing from Tallinn, Estonia"
