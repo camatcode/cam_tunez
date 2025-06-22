@@ -1,6 +1,7 @@
 defmodule TunezWeb.Router do
   use TunezWeb, :router
 
+  alias OpenApiSpex.Plug.SwaggerUI
   alias Plug.Swoosh.MailboxPreview
 
   pipeline :browser do
@@ -14,6 +15,16 @@ defmodule TunezWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  scope "/api/json" do
+    pipe_through [:api]
+
+    forward "/swaggerui", SwaggerUI,
+      path: "/api/json/open_api",
+      default_model_expand_depth: 4
+
+    forward "/", TunezWeb.AshJsonApiRouter
   end
 
   scope "/", TunezWeb do
