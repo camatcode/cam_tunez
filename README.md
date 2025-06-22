@@ -62,4 +62,8 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 * [Preparations](https://hexdocs.pm/ash/preparations.html) are super nice
 
+### Chapter 4
+
+* I love the light touch of `mix ash.extend` - I **despise** removing things from generated code, perfectly fine with adding things after. It doesn't get in the eway.
+
 <!-- page 65 -->
