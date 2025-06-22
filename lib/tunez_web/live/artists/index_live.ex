@@ -1,6 +1,8 @@
 defmodule TunezWeb.Artists.IndexLive do
   use TunezWeb, :live_view
 
+  alias Tunez.Music
+
   require Logger
 
   def mount(_params, _session, socket) do
@@ -9,45 +11,39 @@ defmodule TunezWeb.Artists.IndexLive do
     |> then(&{:ok, &1})
   end
 
-  def handle_params(_params, _url, socket) do
-    artists = Tunez.Music.read_artists!()
+  def handle_params(params, _url, socket) do
+    query_text = Map.get(params, "q", "")
+    sort_by = Map.get(params, "sort_by") |> validate_sort_by()
+    page_params = AshPhoenix.LiveView.page_from_params(params, 12)
+
+    page =
+      Music.search_artists!(query_text,
+        query: [sort_input: sort_by],
+        page: page_params
+      )
 
     socket
-    |> assign(:artists, artists)
+    |> assign(:sort_by, sort_by)
+    |> assign(:query_text, query_text)
+    |> assign(:page, page)
     |> then(&{:noreply, &1})
   end
 
-  def render(assigns) do
-    ~H"""
-    <Layouts.app {assigns}>
-      <.header responsive={false}>
-        <.h1>Artists</.h1>
-        <:action>
-          <.button_link navigate={~p"/artists/new"} kind="primary">
-            New Artist
-          </.button_link>
-        </:action>
-      </.header>
+  def handle_event("change-sort", %{"sort_by" => sort_by}, socket) do
+    params = remove_empty(%{q: socket.assigns.query_text, sort_by: sort_by})
+    {:noreply, push_patch(socket, to: ~p"/?#{params}")}
+  end
 
-      <div :if={@artists == []} class="p-8 text-center">
-        <.icon name="hero-face-frown" class="w-32 h-32 bg-gray-300" />
-        <br /> No artist data to display!
-      </div>
-
-      <ul class="gap-6 lg:gap-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-        <li :for={artist <- @artists}>
-          <.artist_card artist={artist} />
-        </li>
-      </ul>
-    </Layouts.app>
-    """
+  def handle_event("search", %{"query" => query}, socket) do
+    params = remove_empty(%{q: query, sort_by: socket.assigns.sort_by})
+    {:noreply, push_patch(socket, to: ~p"/?#{params}")}
   end
 
   def artist_card(assigns) do
     ~H"""
     <div id={"artist-#{@artist.id}"} data-role="artist-card" class="relative mb-2">
       <.link navigate={~p"/artists/#{@artist.id}"}>
-        <.cover_image />
+        <.cover_image image={@artist.cover_image_url} />
       </.link>
     </div>
     <p class="flex justify-between">
@@ -59,6 +55,7 @@ defmodule TunezWeb.Artists.IndexLive do
         {@artist.name}
       </.link>
     </p>
+    <.artist_card_album_info artist={@artist} />
     """
   end
 
@@ -93,15 +90,43 @@ defmodule TunezWeb.Artists.IndexLive do
 
   def pagination_links(assigns) do
     ~H"""
-    <div class="flex justify-center pt-8 space-x-4">
-      <.button_link data-role="previous-page" kind="primary" inverse>
+    <div
+      :if={
+        AshPhoenix.LiveView.prev_page?(@page) ||
+          AshPhoenix.LiveView.next_page?(@page)
+      }
+      class="flex justify-center pt-8 space-x-4"
+    >
+      <.button_link
+        data-role="previous-page"
+        kind="primary"
+        inverse
+        patch={~p"/?#{query_string(@page, @query_text, @sort_by, "prev")}"}
+        disabled={!AshPhoenix.LiveView.prev_page?(@page)}
+      >
         « Previous
       </.button_link>
-      <.button_link data-role="next-page" kind="primary" inverse>
+      <.button_link
+        data-role="next-page"
+        kind="primary"
+        inverse
+        patch={~p"/?#{query_string(@page, @query_text, @sort_by, "next")}"}
+        disabled={!AshPhoenix.LiveView.next_page?(@page)}
+      >
         Next »
       </.button_link>
     </div>
     """
+  end
+
+  def query_string(page, query_text, sort_by, which) do
+    case AshPhoenix.LiveView.page_link_params(page, which) do
+      :invalid -> []
+      list -> list
+    end
+    |> Keyword.put(:q, query_text)
+    |> Keyword.put(:sort_by, sort_by)
+    |> remove_empty()
   end
 
   attr :query, :string, default: ""
@@ -145,9 +170,12 @@ defmodule TunezWeb.Artists.IndexLive do
 
   defp sort_options do
     [
-      {"recently updated", "updated_at"},
-      {"recently added", "inserted_at"},
-      {"name", "name"}
+      {"recently updated", "-updated_at"},
+      {"recently added", "-inserted_at"},
+      {"name", "name"},
+      {"number of albums", "-album_count"},
+      # -- means nil is at the back
+      {"latest album release", "--latest_album_year_released"}
     ]
   end
 
@@ -165,21 +193,43 @@ defmodule TunezWeb.Artists.IndexLive do
     Enum.filter(params, fn {_key, val} -> val != "" end)
   end
 
-  def handle_event("change-sort", %{"sort_by" => sort_by}, socket) do
-    params = remove_empty(%{q: socket.assigns.query_text, sort_by: sort_by})
-    {:noreply, push_patch(socket, to: ~p"/?#{params}")}
-  end
-
-  def handle_event("search", %{"query" => query}, socket) do
-    params = remove_empty(%{q: query})
-    {:noreply, push_patch(socket, to: ~p"/?#{params}")}
-  end
-
   def round_count(number) do
     case number do
       n when n >= 1_000_000 -> "#{Float.round(n / 1_000_000, 1)}M"
       n when n >= 1_000 -> "#{Float.round(n / 1_000, 1)}K"
       n -> n
     end
+  end
+
+  def render(assigns) do
+    ~H"""
+    <Layouts.app {assigns}>
+      <.header responsive={false}>
+        <.h1>Artists</.h1>
+        <:action><.sort_changer selected={@sort_by} /></:action>
+        <:action>
+          <.search_box query={@query_text} method="get" data-role="artist-search" phx-submit="search" />
+        </:action>
+        <:action>
+          <.button_link navigate={~p"/artists/new"} kind="primary">
+            New Artist
+          </.button_link>
+        </:action>
+      </.header>
+
+      <div :if={Enum.empty?(@page.results)} class="p-8 text-center">
+        <.icon name="hero-face-frown" class="w-32 h-32 bg-gray-300" />
+        <br /> No artist data to display!
+      </div>
+
+      <ul class="gap-6 lg:gap-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        <li :for={artist <- @page.results}>
+          <.artist_card artist={artist} />
+        </li>
+      </ul>
+
+      <.pagination_links page={@page} query_text={@query_text} sort_by={@sort_by} />
+    </Layouts.app>
+    """
   end
 end

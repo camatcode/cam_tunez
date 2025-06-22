@@ -16,9 +16,22 @@ defmodule Tunez.Music.ArtistTest do
         |> Enum.map(&Music.create_artist!/1)
         |> Enum.sort_by(& &1.name)
 
+      albums =
+        Tunez.Seeder.albums()
+        |> Enum.map(fn album ->
+          artist = Enum.random(artists)
+
+          album =
+            Map.put(album, :artist_id, artist.id)
+            |> Map.delete(:artist_name)
+            |> Map.delete(:tracks)
+
+          Music.create_album!(album)
+        end)
+
       refute Enum.empty?(artists)
 
-      %{name: name, bio: bio, artists: artists}
+      %{name: name, bio: bio, artists: artists, albums: albums}
     end
 
     test "Creating records via a changeset", %{name: name, bio: bio} do
@@ -87,6 +100,64 @@ defmodule Tunez.Music.ArtistTest do
     test "Music.destroy_artist/3", %{artists: artists} do
       Enum.each(artists, fn artist ->
         assert :ok = Music.destroy_artist(artist)
+      end)
+    end
+
+    test "filters with expressions", _state do
+      require Ash.Query
+
+      {:ok, [%{name: "Eternal Tides"}]} =
+        Ash.Query.filter(Music.Album, year_released == 2024)
+        |> Ash.read()
+
+      {:ok, [%{name: "Crystal Cove"}]} =
+        Ash.Query.for_read(Artist, :search, %{query: "co"})
+        |> Ash.read()
+    end
+
+    test "Sorting Artists / Pagination check", _state do
+      {:ok,
+       %{
+         results: [%{name: "Nights in the Nullarbor"}, %{name: "The Lost Keys"}],
+         limit: 12,
+         offset: 0,
+         more?: false
+       }} =
+        Music.search_artists("the", query: [sort_input: "name"])
+
+      {:ok,
+       %{
+         results: [%{name: "The Lost Keys"}, %{name: "Nights in the Nullarbor"}],
+         limit: 12,
+         offset: 0,
+         more?: false
+       }} =
+        Music.search_artists("the", query: [sort_input: "-name"])
+    end
+
+    test "album calculation", %{artists: artists} do
+      refute Enum.empty?(artists)
+
+      Enum.each(artists, fn artist ->
+        {:ok, loaded} =
+          Music.get_artist_by_id(artist.id,
+            load: [
+              :album_count,
+              :latest_album_year_released,
+              :cover_image_url,
+              albums: [:string_years_ago]
+            ]
+          )
+
+        assert artist.album_count > 0
+        assert artist.latest_album_year_released
+        assert artist.cover_image_url
+
+        loaded.albums
+        |> Enum.each(fn album ->
+          assert album.years_ago >= 0
+          assert album.string_years_ago
+        end)
       end)
     end
   end
