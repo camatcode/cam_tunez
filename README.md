@@ -25,6 +25,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 * Added docker compose for postgres to sandbox the database
 * Created ExUnit tests instead of running examples in IEX (put under `cam tests`)
+* **Style**: `render(assigns)` functions go at the bottom - I have no clue where I picked this style up, but I can't live without it.
 * Added the following deps
 
 ```
@@ -45,10 +46,13 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 * **Pitfall**: At least in en-US, *D* in [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) stands for *delete*
   * See this Issue from Zach Daniel to learn more: https://github.com/ash-project/ash/issues/165
+
+### Chapter 2 
+
 * **Pitfall**: On page 42, when I was testing out the album form, I thought *hmm those albums aren't showing up right*, 
   * went on a side-quest with show_live, 
   * discovered the `load: albums` on my own, 
   * then literally next page said, to do exactly that.
   * That's my own damn fault for not reading carefully - but it was validating I had the right idea.
-
+* **Pitfall**: When defining the `previous_names` logic for artist, you gotta remove the `defaults` for `:update` (e.g to `defaults [:create, :read, :destroy]`) 
 <!-- page 75 -->
