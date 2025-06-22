@@ -57,5 +57,9 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
   * discovered the `load: albums` on my own, 
   * then literally next page said, to do exactly that.
   * That's my own damn fault for not reading carefully - but it was validating I had the right idea.
+ 
+### Chapter 3
+
+* [Preparations](https://hexdocs.pm/ash/preparations.html) are super nice
 
 <!-- page 65 -->
