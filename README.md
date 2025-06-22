@@ -47,12 +47,12 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ### Chapter 1
 
-* ⚠️:  *D* in [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) usually stands for *delete*
+*🤔:  *D* in [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) usually stands for *delete*
   * See this Issue from Zach Daniel to learn more: https://github.com/ash-project/ash/issues/165
 
 ### Chapter 2 
 
-* ⚠️ : On page 42, when I was testing out the album form, I thought *hmm those albums aren't showing up right*, 
+* (ᵕ—ᴗ—) : On page 42, when I was testing out the album form, I thought *hmm those albums aren't showing up right*, 
   * went on a side-quest with show_live, 
   * discovered the `load: albums` on my own, 
   * then literally next page said, to do exactly that.
@@ -64,7 +64,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ### Chapter 4
 
-* 😎 I love the light touch of `mix ash.extend`
+* 👌 I love the light touch of `mix ash.extend`
   *  I **despise** having to remove things from generated code, perfectly fine with adding things after. It doesn't get in the way.
 
 <!-- page 65 -->
