@@ -25,7 +25,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ### Personal / Style / Opinionated Changes
 
 * **Infrastructure**: Added docker compose for postgres to sandbox the database
-* **Preference**: Created ExUnit tests instead of running examples in IEX (put under `cam tests`)
+* **TDD Preference**: Created ExUnit tests instead of running examples in IEX (put under `cam tests`)
 * **Style**: `render(assigns)` functions go at the bottom - I have no clue where I picked this style up, but I can't live without it.
 * **Helpers**: Added the following deps
 
