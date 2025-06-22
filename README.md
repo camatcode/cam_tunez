@@ -58,4 +58,4 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
   * That's my own damn fault for not reading carefully - but it was validating I had the right idea.
 * **Pitfall**: (~ page 54) When defining the `previous_names` logic for artist, you gotta remove the `defaults` for `:update` (e.g to `defaults [:create, :read, :destroy]`) 
 
-
+<!-- page 65 -->
