@@ -134,6 +134,21 @@ defmodule Tunez.Music.ArtistTest do
        }} =
         Music.search_artists("the", query: [sort_input: "-name"])
     end
+
+    test "album calculation", %{artists: artists} do
+      refute Enum.empty?(artists)
+
+      Enum.each(artists, fn artist ->
+        {:ok, loaded} =
+          Music.get_artist_by_id(artist.id, load: [albums: [:string_years_ago]])
+
+        loaded.albums
+        |> Enum.each(fn album ->
+          assert album.years_ago >= 0
+          assert album.string_years_ago
+        end)
+      end)
+    end
   end
 
   describe "Tunez.Music.read_artists!/0-2" do
