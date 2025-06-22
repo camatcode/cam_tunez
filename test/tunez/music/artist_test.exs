@@ -140,7 +140,18 @@ defmodule Tunez.Music.ArtistTest do
 
       Enum.each(artists, fn artist ->
         {:ok, loaded} =
-          Music.get_artist_by_id(artist.id, load: [albums: [:string_years_ago]])
+          Music.get_artist_by_id(artist.id,
+            load: [
+              :album_count,
+              :latest_album_year_released,
+              :cover_image_url,
+              albums: [:string_years_ago]
+            ]
+          )
+
+        assert artist.album_count > 0
+        assert artist.latest_album_year_released
+        assert artist.cover_image_url
 
         loaded.albums
         |> Enum.each(fn album ->
