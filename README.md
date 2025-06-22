@@ -15,7 +15,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ### Important Changes / Possible Errata
 
 
-* ‼️ : (~ page 54 / Chp 2) When defining the `previous_names` logic for artist, you gotta remove the `defaults` for `:update` (e.g to `defaults [:create, :read, :destroy]`) 
+* ‼️ (~ page 54 / Chp 2) When defining the `previous_names` logic for artist, you gotta remove the `defaults` for `:update` (e.g to `defaults [:create, :read, :destroy]`) 
 
 ### To figure out
 
@@ -64,6 +64,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ### Chapter 4
 
-* 😎 I love the light touch of `mix ash.extend` - I **despise** removing things from generated code, perfectly fine with adding things after. It doesn't get in the way.
+* 😎 I love the light touch of `mix ash.extend`
+  *  I **despise** removing things from generated code, perfectly fine with adding things after. It doesn't get in the way.
 
 <!-- page 65 -->
