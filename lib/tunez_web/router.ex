@@ -36,6 +36,12 @@ defmodule TunezWeb.Router do
     pipe_through :browser
 
     ash_authentication_live_session :authenticated_routes do
+      live "/", Artists.IndexLive
+      live "/artists/new", Artists.FormLive, :new
+      live "/artists/:id", Artists.ShowLive
+      live "/artists/:id/edit", Artists.FormLive, :edit
+      live "/artists/:artist_id/albums/new", Albums.FormLive, :new
+      live "/albums/:id/edit", Albums.FormLive, :edit
       # in each liveview, add one of the following at the top of the module:
       #
       # If an authenticated user must be present:
@@ -73,12 +79,6 @@ defmodule TunezWeb.Router do
   scope "/", TunezWeb do
     pipe_through :browser
 
-    live "/", Artists.IndexLive
-    live "/artists/new", Artists.FormLive, :new
-    live "/artists/:id", Artists.ShowLive
-    live "/artists/:id/edit", Artists.FormLive, :edit
-    live "/artists/:artist_id/albums/new", Albums.FormLive, :new
-    live "/albums/:id/edit", Albums.FormLive, :edit
     auth_routes AuthController, User, path: "/auth"
     sign_out_route AuthController
 

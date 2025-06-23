@@ -8,6 +8,8 @@ defmodule Tunez.Accounts.User do
 
   alias AshAuthentication.Checks.AshAuthenticationInteraction
   alias AshAuthentication.Preparations.FilterBySubject
+  alias AshAuthentication.Strategy.MagicLink.Request
+  alias AshAuthentication.Strategy.MagicLink.SignInChange
   alias AshAuthentication.Strategy.Password.HashPasswordChange
   alias AshAuthentication.Strategy.Password.PasswordConfirmationValidation
   alias AshAuthentication.Strategy.Password.PasswordValidation
@@ -16,6 +18,7 @@ defmodule Tunez.Accounts.User do
   alias AshAuthentication.Strategy.Password.SignInPreparation
   alias AshAuthentication.Strategy.Password.SignInWithTokenPreparation
   alias Tunez.Accounts.Token
+  alias Tunez.Accounts.User.Senders.SendMagicLinkEmail
   alias Tunez.Accounts.User.Senders.SendNewUserConfirmationEmail
   alias Tunez.Accounts.User.Senders.SendPasswordResetEmail
 
@@ -55,6 +58,14 @@ defmodule Tunez.Accounts.User do
           password_reset_action_name :reset_password_with_token
           request_password_reset_action_name :request_password_reset_token
         end
+      end
+
+      magic_link do
+        identity_field :email
+        registration_enabled? true
+        require_interaction? true
+
+        sender SendMagicLinkEmail
       end
     end
   end
@@ -238,6 +249,34 @@ defmodule Tunez.Accounts.User do
       # Generates an authentication token for the user
       change AshAuthentication.GenerateTokenChange
     end
+
+    create :sign_in_with_magic_link do
+      description "Sign in or register a user with magic link."
+
+      argument :token, :string do
+        description "The token from the magic link that was sent to the user"
+        allow_nil? false
+      end
+
+      upsert? true
+      upsert_identity :unique_email
+      upsert_fields [:email]
+
+      # Uses the information from the token to create or sign in the user
+      change SignInChange
+
+      metadata :token, :string do
+        allow_nil? false
+      end
+    end
+
+    action :request_magic_link do
+      argument :email, :ci_string do
+        allow_nil? false
+      end
+
+      run Request
+    end
   end
 
   policies do
@@ -259,7 +298,6 @@ defmodule Tunez.Accounts.User do
     end
 
     attribute :hashed_password, :string do
-      allow_nil? false
       sensitive? true
     end
 

@@ -7,18 +7,29 @@ defmodule TunezWeb.AuthOverrides do
   # The body contains any number of configurations you wish to override
   # Below are some examples
 
+  alias AshAuthentication.Phoenix.Components
   # For a complete reference, see https://hexdocs.pm/ash_authentication_phoenix/ui-overrides.html
-  alias AshAuthentication.Phoenix.Components.Banner
-  alias AshAuthentication.Phoenix.Components.SignIn
+  alias AshAuthentication.Phoenix.Components.Password.Input.Input
 
-  # override Banner do
-  #  set :image_url, "https://media.giphy.com/media/g7GKcSzwQfugw/giphy.gif"
-  #  set :text_class, "bg-red-500"
-  # remove the in-between "flex"
-  # set :root_class, "flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
-  # end
+  override Input do
+    set :submit_class, "bg-primary-600 text-white my-4 py-3 px-5 text-sm"
+  end
 
-  # override SignIn do
-  # set :show_banner, false
-  # end
+  override Components.Banner do
+    set :image_url, nil
+    set :dark_image_url, nil
+    set :text_class, "text-4xl text-accent-400"
+    set :text, "♫ CamTunez"
+  end
+
+  override Components.SignIn do
+    set :show_banner, true
+
+    set :root_class,
+        "text-accent-400 flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+  end
+
+  override Components.MagicLink do
+    set :request_flash_text, "Check your email for a sign-in link!"
+  end
 end

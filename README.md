@@ -14,14 +14,12 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 ### Important Changes / Possible Errata
 
-
 * ‼️ (~ page 54 / Chp 2) When defining the `previous_names` logic for artist, you gotta remove the `defaults` for `:update` (e.g to `defaults [:create, :read, :destroy]`) 
 
 ### To figure out
 
 * Changed the tool-versions erlang / elixir due to hex being unable to pull `inflex` (this might be something to do with my local hex?)
-* Something is up with the styling of the "Sign in" button from AshPhx
-  * Its currently not rendering the blue button background (and the text is white, so it appears missing) 
+* TODO: Double-check the email confirmation page
 
 ### Personal / Style / Opinionated Changes
 
@@ -44,7 +42,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ```
 
 * Something about standalone tailwind causes "`sh: 1: watchman: not found`"
-  * Despite Meta warning against it, your best bet is to use the `watchman` package found from your normal `apt-get install watchman`
+  * Despite Meta warning against it, your best bet is to use the `watchman` package found from your normal `sudo apt-get install watchman`
   * Trust me: All other options are a nightmare
 
 
