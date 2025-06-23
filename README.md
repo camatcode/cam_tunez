@@ -20,7 +20,8 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ### To figure out
 
 * Changed the tool-versions erlang / elixir due to hex being unable to pull `inflex` (this might be something to do with my local hex?)
-* Something about standalone tailwind causes "`sh: 1: watchman: not found`" (probably important: OS is Linux Mint)
+* Something is up with the styling of the "Sign in" button from AshPhx
+  * Its currently not rendering the blue button background (and the text is white, so it appears missing) 
 
 ### Personal / Style / Opinionated Changes
 
@@ -41,6 +42,11 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
       # for fuzzing input to my added tests
       {:faker, "~> 0.18.0", only: :test},
 ```
+
+* Something about standalone tailwind causes "`sh: 1: watchman: not found`"
+  * Despite Meta warning against it, your best bet is to use the `watchman` package found from your normal `apt-get install watchman`
+  * Trust me: All other options are a nightmare
+
 
 
 ## Thoughts / Pitfalls / Review
