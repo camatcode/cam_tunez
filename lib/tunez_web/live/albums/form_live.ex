@@ -4,8 +4,11 @@ defmodule TunezWeb.Albums.FormLive do
   alias Tunez.Music
 
   def mount(%{"artist_id" => artist_id}, _session, socket) do
-    artist = Music.get_artist_by_id!(artist_id)
-    form = Music.form_to_create_album(artist.id)
+    artist = Music.get_artist_by_id!(artist_id, actor: socket.assigns.current_user)
+
+    form =
+      Music.form_to_create_album(artist.id, actor: socket.assigns.current_user)
+      |> AshPhoenix.Form.ensure_can_submit!()
 
     socket
     |> assign(:form, to_form(form))
@@ -15,8 +18,11 @@ defmodule TunezWeb.Albums.FormLive do
   end
 
   def mount(%{"id" => album_id}, _session, socket) do
-    album = Music.get_album_by_id!(album_id, load: [:artist])
-    form = Music.form_to_create_album(album)
+    album = Music.get_album_by_id!(album_id, load: [:artist], actor: socket.assigns.current_user)
+
+    form =
+      Music.form_to_create_album(album, actor: socket.assigns.current_user)
+      |> AshPhoenix.Form.ensure_can_submit!()
 
     socket
     |> assign(:form, to_form(form))

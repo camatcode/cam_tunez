@@ -80,4 +80,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 * I have many complex thoughts on this chapter (that's okay, it's a complex topic!) - holding off until I finish the book
 
+<!-- use a process dictionary instead of always saying *this is my actor* -->
+
+
 <!-- page 65 -->

@@ -1,17 +1,20 @@
 import Config
 
+config :ash, :policies, show_policy_breakdowns?: true
+
+config :ash_authentication, debug_authentication_failures?: true
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :default_formatter, format: "[$level] $message\n"
 
 # Initialize plugs at runtime for faster development compilation
-config :phoenix, :plug_init_mode, :runtime
-
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
+# Include HEEx debug annotations as HTML comments in rendered markup
+config :phoenix, :plug_init_mode, :runtime
 config :phoenix, :stacktrace_depth, 20
 
 config :phoenix_live_view,
-  # Include HEEx debug annotations as HTML comments in rendered markup
   debug_heex_annotations: true,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
@@ -64,16 +67,16 @@ config :tunez, TunezWeb.Endpoint,
     tailwind: {Tailwind, :install_and_run, [:tunez, ~w(--watch)]}
   ]
 
-# Watch static and templates for browser reloading.
-#       keyfile: "priv/cert/selfsigned_key.pem",
-#       certfile: "priv/cert/selfsigned.pem"
-#     ],
-#
-# If desired, both `http:` and `https:` keys can be
-# configured to run both http and https servers on
-# different ports.
-
 config :tunez, TunezWeb.Endpoint,
+  # Watch static and templates for browser reloading.
+  #       keyfile: "priv/cert/selfsigned_key.pem",
+  #       certfile: "priv/cert/selfsigned.pem"
+  #     ],
+  #
+  # If desired, both `http:` and `https:` keys can be
+  # configured to run both http and https servers on
+  # different ports.
+  # Enable dev routes for dashboard and mailbox
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
@@ -82,8 +85,4 @@ config :tunez, TunezWeb.Endpoint,
     ]
   ]
 
-# Enable dev routes for dashboard and mailbox
 config :tunez, dev_routes: true, token_signing_secret: "QLbHAQiBZyN+LSq6Wx7sWdAj7u/TFzAj"
-
-config :ash_authentication, debug_authentication_failures?: true
-config :ash, :policies, show_policy_breakdowns?: true

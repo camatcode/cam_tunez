@@ -6,6 +6,7 @@ defmodule Tunez.Music.Artist do
     extensions: [AshGraphql.Resource, AshJsonApi.Resource],
     authorizers: [Ash.Policy.Authorizer]
 
+  alias Tunez.Accounts.User
   alias Tunez.Music.Album
   alias Tunez.Music.Changes.UpdatePreviousNames
 
@@ -114,6 +115,9 @@ defmodule Tunez.Music.Artist do
       sort year_released: :desc
       public? true
     end
+
+    belongs_to :created_by, User
+    belongs_to :updated_by, User
   end
 
   calculations do

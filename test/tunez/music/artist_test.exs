@@ -10,7 +10,7 @@ defmodule Tunez.Music.ArtistTest do
   describe "cam tests > " do
     setup do
       eml = Faker.Internet.email()
-      password = Faker.Internet.slug()
+      password = Faker.Internet.slug() <> "_#{System.monotonic_time()}"
       password_confirm = password
 
       {:ok, user} =
@@ -41,7 +41,7 @@ defmodule Tunez.Music.ArtistTest do
             |> Map.delete(:artist_name)
             |> Map.delete(:tracks)
 
-          Music.create_album!(album)
+          Music.create_album!(album, actor: user)
         end)
 
       refute Enum.empty?(artists)
@@ -104,7 +104,9 @@ defmodule Tunez.Music.ArtistTest do
       Enum.each(artists, fn %{id: id, name: old_name} = artist ->
         # via update_artist/3
         new_name = Faker.Person.name()
-        assert {:ok, %{id: ^id, name: ^new_name}} = Music.update_artist(artist, %{name: new_name}, actor: actor)
+
+        assert {:ok, %{id: ^id, name: ^new_name}} =
+                 Music.update_artist(artist, %{name: new_name}, actor: actor)
 
         # via changeset
         new_name = Faker.Person.name()

@@ -1,18 +1,19 @@
 defmodule TunezWeb.Artists.FormLiveTest do
   use TunezWeb.ConnCase, async: true
 
+  alias Tunez.Accounts.User
   alias Tunez.Music, warn: false
   alias Tunez.Music.Artist
 
   describe "cam tests >" do
     setup do
       eml = Faker.Internet.email()
-      password = Faker.Internet.slug()
+      password = Faker.Internet.slug() <> "_#{System.monotonic_time()}"
       password_confirm = password
 
       {:ok, user} =
         Ash.Changeset.for_create(
-          Tunez.Accounts.User,
+          User,
           :register_with_password,
           %{email: eml, password: password, password_confirmation: password_confirm}
         )
@@ -22,7 +23,7 @@ defmodule TunezWeb.Artists.FormLiveTest do
       %{admin: user}
     end
 
-    test "a form in action" ,%{admin: actor} do
+    test "a form in action", %{admin: actor} do
       name = "Best Band Ever"
 
       form = AshPhoenix.Form.for_create(Artist, :create, actor: actor)
@@ -38,7 +39,9 @@ defmodule TunezWeb.Artists.FormLiveTest do
       form = Music.form_to_create_artist(actor: actor)
       validation = AshPhoenix.Form.validate(form, %{name: name})
       assert validation.source.valid?
-      assert {:ok, %Artist{name: ^name}} = AshPhoenix.Form.submit(form, params: %{name: name}, actor: actor)
+
+      assert {:ok, %Artist{name: ^name}} =
+               AshPhoenix.Form.submit(form, params: %{name: name}, actor: actor)
     end
   end
 

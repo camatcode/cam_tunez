@@ -8,7 +8,7 @@ defmodule TunezWeb.Artists.IndexLiveTest do
   describe "cam tests >" do
     setup do
       eml = Faker.Internet.email()
-      password = Faker.Internet.slug()
+      password = Faker.Internet.slug() <> "_#{System.monotonic_time()}"
       password_confirm = password
 
       {:ok, user} =
@@ -39,7 +39,7 @@ defmodule TunezWeb.Artists.IndexLiveTest do
             |> Map.delete(:artist_name)
             |> Map.delete(:tracks)
 
-          Music.create_album!(album)
+          Music.create_album!(album, actor: user)
         end)
 
       refute Enum.empty?(artists)

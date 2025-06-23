@@ -10,7 +10,7 @@ defmodule TunezWeb.Artists.ShowLive do
   end
 
   def handle_params(%{"id" => artist_id}, _url, socket) do
-    artist = get_artist(artist_id)
+    artist = get_artist(artist_id, socket.assigns.current_user)
 
     socket
     |> assign(:artist, artist)
@@ -21,7 +21,7 @@ defmodule TunezWeb.Artists.ShowLive do
   def handle_event("destroy-artist", _params, socket) do
     socket =
       socket.assigns.artist
-      |> Music.destroy_artist()
+      |> Music.destroy_artist(actor: socket.assigns.current_user)
       |> case do
         :ok ->
           socket
@@ -40,10 +40,10 @@ defmodule TunezWeb.Artists.ShowLive do
 
   def handle_event("destroy-album", %{"id" => album_id}, socket) do
     socket =
-      case Music.destroy_album(album_id) do
+      case Music.destroy_album(album_id, actor: socket.assigns.current_user) do
         :ok ->
           socket
-          |> update(:artist, &get_artist/1)
+          |> update(:artist, &get_artist(&1, socket.assigns.current_user))
           |> put_flash(:info, "Album deleted successfully")
 
         {:error, error} ->
@@ -74,7 +74,7 @@ defmodule TunezWeb.Artists.ShowLive do
         <:subtitle :if={!Enum.empty?(@artist.previous_names)}>
           FKA: {Enum.join(@artist.previous_names, ", ")}
         </:subtitle>
-        <:action>
+        <:action :if={Tunez.Music.can_destroy_artist?(@current_user, @artist)}>
           <.button_link
             kind="error"
             inverse
@@ -84,7 +84,7 @@ defmodule TunezWeb.Artists.ShowLive do
             Delete Artist
           </.button_link>
         </:action>
-        <:action>
+        <:action :if={Tunez.Music.can_update_artist?(@current_user, @artist)}>
           <.button_link navigate={~p"/artists/#{@artist.id}/edit"} kind="primary" inverse>
             Edit Artist
           </.button_link>
@@ -92,13 +92,17 @@ defmodule TunezWeb.Artists.ShowLive do
       </.header>
       <div class="mb-6">{formatted(@artist.biography)}</div>
 
-      <.button_link navigate={~p"/artists/#{@artist.id}/albums/new"} kind="primary">
+      <.button_link
+        :if={Tunez.Music.can_create_album?(@current_user)}
+        navigate={~p"/artists/#{@artist.id}/albums/new"}
+        kind="primary"
+      >
         New Album
       </.button_link>
 
       <ul class="mt-10 space-y-6 md:space-y-10">
         <li :for={album <- @artist.albums}>
-          <.album_details album={album} />
+          <.album_details album={album} current_user={@current_user} />
         </li>
       </ul>
     </Layouts.app>
@@ -165,10 +169,10 @@ defmodule TunezWeb.Artists.ShowLive do
     |> Enum.intersperse(Phoenix.HTML.raw({:safe, "<br/>"}))
   end
 
-  defp get_artist(%{id: artist_id}), do: get_artist(artist_id)
+  defp get_artist(%{id: artist_id}, actor), do: get_artist(artist_id, actor)
 
-  defp get_artist(artist_id) do
-    Music.get_artist_by_id!(artist_id, load: [:albums])
+  defp get_artist(artist_id, actor) do
+    Music.get_artist_by_id!(artist_id, load: [:albums], actor: actor)
   end
 
   def follow_toggle(assigns) do

@@ -2,6 +2,10 @@ import Config
 
 alias Swoosh.Adapters.Test
 
+config :ash, :policies, show_policy_breakdowns?: true
+
+config :ash_authentication, debug_authentication_failures?: true
+
 config :bcrypt_elixir, log_rounds: 1
 
 # Print only warnings and errors during test
@@ -12,21 +16,19 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Enable helpful, but potentially expensive runtime checks
 config :phoenix_live_view,
+  # Configure your database
+  #
   enable_expensive_runtime_checks: true
 
 config :phoenix_test, :endpoint, TunezWeb.Endpoint
 
-# Disable swoosh api client as it is only required for production adapters
-config :swoosh, :api_client, false
-
-# Configure your database
-#
-
 # In test we don't send emails
 # The MIX_TEST_PARTITION environment variable can be used
-
+# Disable swoosh api client as it is only required for production adapters
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
+config :swoosh, :api_client, false
+
 config :tunez, Tunez.Mailer, adapter: Test
 
 config :tunez, Tunez.Repo,
@@ -45,6 +47,3 @@ config :tunez, TunezWeb.Endpoint,
   server: false
 
 config :tunez, token_signing_secret: "5NSiCb+BrW5SH2F8yl/rpSQ0L9FwZVhj"
-
-config :ash_authentication, debug_authentication_failures?: true
-config :ash, :policies, show_policy_breakdowns?: true
