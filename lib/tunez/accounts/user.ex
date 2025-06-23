@@ -4,7 +4,7 @@ defmodule Tunez.Accounts.User do
     domain: Tunez.Accounts,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshAuthentication]
+    extensions: [AshJsonApi.Resource, AshAuthentication]
 
   alias AshAuthentication.Checks.AshAuthenticationInteraction
   alias AshAuthentication.Preparations.FilterBySubject
@@ -68,6 +68,10 @@ defmodule Tunez.Accounts.User do
         sender SendMagicLinkEmail
       end
     end
+  end
+
+  json_api do
+    type "user"
   end
 
   postgres do
