@@ -74,5 +74,6 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ### Chapter 5
 
 * TIL: IEx's `v()`
+* No end of trouble with the CSS styling on the sign-in and magic link pages, will have to come back to it.
 
 <!-- page 65 -->
