@@ -5,23 +5,40 @@ defmodule TunezWeb.Artists.FormLiveTest do
   alias Tunez.Music.Artist
 
   describe "cam tests >" do
-    test "a form in action" do
+    setup do
+      eml = Faker.Internet.email()
+      password = Faker.Internet.slug()
+      password_confirm = password
+
+      {:ok, user} =
+        Ash.Changeset.for_create(
+          Tunez.Accounts.User,
+          :register_with_password,
+          %{email: eml, password: password, password_confirmation: password_confirm}
+        )
+        |> Ash.create(authorize?: false)
+
+      {:ok, user} = Tunez.Accounts.set_user_role(user, :admin, authorize?: false)
+      %{admin: user}
+    end
+
+    test "a form in action" ,%{admin: actor} do
       name = "Best Band Ever"
 
-      form = AshPhoenix.Form.for_create(Artist, :create)
+      form = AshPhoenix.Form.for_create(Artist, :create, actor: actor)
 
       validation = AshPhoenix.Form.validate(form, %{name: name})
       assert validation.source.valid?
 
-      assert {:ok, %Artist{name: ^name}} = AshPhoenix.Form.submit(form, params: %{name: name})
+      AshPhoenix.Form.submit(form, params: %{name: name}, actor: actor)
 
       # using the extension: AshPhoenix
 
       name = Faker.Person.name()
-      form = Music.form_to_create_artist()
+      form = Music.form_to_create_artist(actor: actor)
       validation = AshPhoenix.Form.validate(form, %{name: name})
       assert validation.source.valid?
-      assert {:ok, %Artist{name: ^name}} = AshPhoenix.Form.submit(form, params: %{name: name})
+      assert {:ok, %Artist{name: ^name}} = AshPhoenix.Form.submit(form, params: %{name: name}, actor: actor)
     end
   end
 

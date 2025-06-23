@@ -46,13 +46,15 @@ defmodule Tunez.Accounts.UserTest do
       password = Faker.Internet.slug()
       password_confirm = password
 
-      {:error, %Forbidden{}} =
+      {:ok, user} =
         Ash.Changeset.for_create(
           User,
           :register_with_password,
           %{email: eml, password: password, password_confirmation: password_confirm}
         )
         |> Ash.create()
+
+      assert user.email |> to_string() == eml
     end
   end
 end

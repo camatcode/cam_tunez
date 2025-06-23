@@ -45,3 +45,6 @@ config :tunez, TunezWeb.Endpoint,
   server: false
 
 config :tunez, token_signing_secret: "5NSiCb+BrW5SH2F8yl/rpSQ0L9FwZVhj"
+
+config :ash_authentication, debug_authentication_failures?: true
+config :ash, :policies, show_policy_breakdowns?: true

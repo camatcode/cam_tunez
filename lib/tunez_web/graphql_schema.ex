@@ -2,7 +2,7 @@ defmodule TunezWeb.GraphqlSchema do
   use Absinthe.Schema
 
   use AshGraphql,
-    domains: [Tunez.Music]
+    domains: [Tunez.Music, Tunez.Accounts]
 
   alias Absinthe.Plug.Types
 

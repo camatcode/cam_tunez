@@ -3,17 +3,32 @@ defmodule Tunez.Music.ArtistTest do
 
   alias Ash.Error.Changes.Required
   alias Ash.Error.Invalid
+  alias Tunez.Accounts.User
   alias Tunez.Music, warn: false
   alias Tunez.Music.Artist
 
   describe "cam tests > " do
     setup do
+      eml = Faker.Internet.email()
+      password = Faker.Internet.slug()
+      password_confirm = password
+
+      {:ok, user} =
+        Ash.Changeset.for_create(
+          User,
+          :register_with_password,
+          %{email: eml, password: password, password_confirmation: password_confirm}
+        )
+        |> Ash.create(authorize?: false)
+
+      {:ok, user} = Tunez.Accounts.set_user_role(user, :admin, authorize?: false)
+
       name = "Valkyrie's Fury"
       bio = "A power metal band hailing from Tallinn, Estonia"
 
       artists =
         Tunez.Seeder.artists()
-        |> Enum.map(&Music.create_artist!/1)
+        |> Enum.map(&Music.create_artist!(&1, actor: user))
         |> Enum.sort_by(& &1.name)
 
       albums =
@@ -31,10 +46,10 @@ defmodule Tunez.Music.ArtistTest do
 
       refute Enum.empty?(artists)
 
-      %{name: name, bio: bio, artists: artists, albums: albums}
+      %{name: name, bio: bio, artists: artists, albums: albums, admin: user}
     end
 
-    test "Creating records via a changeset", %{name: name, bio: bio} do
+    test "Creating records via a changeset", %{name: name, bio: bio, admin: actor} do
       {:ok,
        %Artist{
          name: ^name,
@@ -44,26 +59,28 @@ defmodule Tunez.Music.ArtistTest do
           name: name,
           biography: bio
         })
-        |> Ash.create()
+        |> Ash.create(actor: actor, authorize?: false)
     end
 
-    test "Validation check (pg 13)" do
+    test "Validation check (pg 13)", %{admin: actor} do
       {:error, %Invalid{errors: [%Required{field: :name}]}} =
         Ash.Changeset.for_create(Artist, :create, %{
           name: ""
         })
-        |> Ash.create()
+        |> Ash.create(actor: actor)
     end
 
-    test "Music.create_artist/2", %{name: name, bio: bio} do
+    test "Music.create_artist/2", %{name: name, bio: bio, admin: actor} do
       assert {:ok, %Artist{name: ^name, biography: ^bio}} =
-               Music.create_artist(%{name: name, biography: bio})
+               Music.create_artist(%{name: name, biography: bio}, actor: actor)
     end
 
     test "Music.read_artists/0", %{artists: artists} do
       {:ok, retrieved_artists} = Music.read_artists()
       # because Syndicate is in retrieved, but not in artists
-      assert Enum.all?(artists, &Enum.member?(retrieved_artists, &1))
+      to_find_ids = Enum.map(artists, & &1.id)
+      found_ids = Enum.map(retrieved_artists, & &1.id)
+      assert Enum.all?(to_find_ids, &Enum.member?(found_ids, &1))
     end
 
     test "Manual query", %{artists: [artist | _]} do
@@ -72,20 +89,22 @@ defmodule Tunez.Music.ArtistTest do
         |> Ash.Query.sort(name: :asc)
         |> Ash.Query.limit(1)
 
-      assert {:ok, [^artist]} = Ash.read(query)
+      assert {:ok, [found]} = Ash.read(query)
+      assert found.id == artist.id
     end
 
     test "Music.get_artist_by_id/3", %{artists: artists} do
       Enum.each(artists, fn artist ->
-        assert {:ok, ^artist} = Music.get_artist_by_id(artist.id)
+        assert {:ok, found} = Music.get_artist_by_id(artist.id)
+        assert found.id == artist.id
       end)
     end
 
-    test "Music.update_artist/3", %{artists: artists} do
+    test "Music.update_artist/3", %{artists: artists, admin: actor} do
       Enum.each(artists, fn %{id: id, name: old_name} = artist ->
         # via update_artist/3
         new_name = Faker.Person.name()
-        assert {:ok, %{id: ^id, name: ^new_name}} = Music.update_artist(artist, %{name: new_name})
+        assert {:ok, %{id: ^id, name: ^new_name}} = Music.update_artist(artist, %{name: new_name}, actor: actor)
 
         # via changeset
         new_name = Faker.Person.name()
@@ -93,13 +112,13 @@ defmodule Tunez.Music.ArtistTest do
         assert {:ok, %{id: ^id, name: ^new_name}} =
                  artist
                  |> Ash.Changeset.for_update(:update, %{name: new_name})
-                 |> Ash.update()
+                 |> Ash.update(actor: actor)
       end)
     end
 
-    test "Music.destroy_artist/3", %{artists: artists} do
+    test "Music.destroy_artist/3", %{artists: artists, admin: actor} do
       Enum.each(artists, fn artist ->
-        assert :ok = Music.destroy_artist(artist)
+        assert :ok = Music.destroy_artist(artist, actor: actor)
       end)
     end
 
@@ -110,7 +129,7 @@ defmodule Tunez.Music.ArtistTest do
         Ash.Query.filter(Music.Album, year_released == 2024)
         |> Ash.read()
 
-      {:ok, [%{name: "Crystal Cove"}]} =
+      {:ok, %{results: [%{name: "Crystal Cove"}]}} =
         Ash.Query.for_read(Artist, :search, %{query: "co"})
         |> Ash.read()
     end

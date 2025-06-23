@@ -1,17 +1,32 @@
 defmodule TunezWeb.Artists.IndexLiveTest do
   use TunezWeb.ConnCase, async: true
 
+  alias Tunez.Accounts.User
   alias Tunez.Music
   alias TunezWeb.Artists.IndexLive
 
   describe "cam tests >" do
     setup do
+      eml = Faker.Internet.email()
+      password = Faker.Internet.slug()
+      password_confirm = password
+
+      {:ok, user} =
+        Ash.Changeset.for_create(
+          User,
+          :register_with_password,
+          %{email: eml, password: password, password_confirmation: password_confirm}
+        )
+        |> Ash.create(authorize?: false)
+
+      {:ok, user} = Tunez.Accounts.set_user_role(user, :admin, authorize?: false)
+
       name = "Valkyrie's Fury"
       bio = "A power metal band hailing from Tallinn, Estonia"
 
       artists =
         Tunez.Seeder.artists()
-        |> Enum.map(&Music.create_artist!/1)
+        |> Enum.map(&Music.create_artist!(&1, actor: user))
         |> Enum.sort_by(& &1.name)
 
       albums =
@@ -29,10 +44,10 @@ defmodule TunezWeb.Artists.IndexLiveTest do
 
       refute Enum.empty?(artists)
 
-      %{name: name, bio: bio, artists: artists, albums: albums}
+      %{name: name, bio: bio, artists: artists, albums: albums, admin: user}
     end
 
-    test "Pagination", _state do
+    test "Pagination", %{admin: _actor} do
       page = Music.search_artists!("a")
 
       [sort_by: "name", q: "a"] =

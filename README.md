@@ -43,7 +43,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 * Something about standalone tailwind causes "`sh: 1: watchman: not found`"
   * Despite Meta warning against it, your best bet is to use the `watchman` package found from your normal `sudo apt-get install watchman`
-  * Trust me: All other options are a nightmare
+  * *Trust me*: All other options are a nightmare
 
 
 
@@ -75,5 +75,9 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 
 * TIL: IEx's `v()`
 * No end of trouble with the CSS styling on the sign-in and magic link pages, will have to come back to it.
+
+### Chapter 6
+
+* I have many complex thoughts on this chapter (that's okay, it's a complex topic!) - holding off until I finish the book
 
 <!-- page 65 -->

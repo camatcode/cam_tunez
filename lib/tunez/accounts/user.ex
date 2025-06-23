@@ -4,7 +4,7 @@ defmodule Tunez.Accounts.User do
     domain: Tunez.Accounts,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshJsonApi.Resource, AshAuthentication]
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource, AshAuthentication]
 
   alias AshAuthentication.Checks.AshAuthenticationInteraction
   alias AshAuthentication.Preparations.FilterBySubject
@@ -17,6 +17,7 @@ defmodule Tunez.Accounts.User do
   alias AshAuthentication.Strategy.Password.ResetTokenValidation
   alias AshAuthentication.Strategy.Password.SignInPreparation
   alias AshAuthentication.Strategy.Password.SignInWithTokenPreparation
+  alias Tunez.Accounts.Role
   alias Tunez.Accounts.Token
   alias Tunez.Accounts.User.Senders.SendMagicLinkEmail
   alias Tunez.Accounts.User.Senders.SendNewUserConfirmationEmail
@@ -68,6 +69,10 @@ defmodule Tunez.Accounts.User do
         sender SendMagicLinkEmail
       end
     end
+  end
+
+  graphql do
+    type :user
   end
 
   json_api do
@@ -281,6 +286,10 @@ defmodule Tunez.Accounts.User do
 
       run Request
     end
+
+    update :set_role do
+      accept [:role]
+    end
   end
 
   policies do
@@ -288,8 +297,8 @@ defmodule Tunez.Accounts.User do
       authorize_if always()
     end
 
-    policy always() do
-      forbid_if always()
+    policy action([:register_with_password, :sign_in_with_password]) do
+      authorize_if always()
     end
   end
 
@@ -306,6 +315,11 @@ defmodule Tunez.Accounts.User do
     end
 
     attribute :confirmed_at, :utc_datetime_usec
+
+    attribute :role, Role do
+      allow_nil? false
+      default :user
+    end
   end
 
   identities do

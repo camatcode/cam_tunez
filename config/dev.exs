@@ -86,3 +86,4 @@ config :tunez, TunezWeb.Endpoint,
 config :tunez, dev_routes: true, token_signing_secret: "QLbHAQiBZyN+LSq6Wx7sWdAj7u/TFzAj"
 
 config :ash_authentication, debug_authentication_failures?: true
+config :ash, :policies, show_policy_breakdowns?: true
