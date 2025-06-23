@@ -1,6 +1,7 @@
 defmodule Tunez.Accounts.UserTest do
   use Tunez.DataCase, async: false
 
+  alias Ash.Error.Forbidden
   alias Tunez.Accounts.User
 
   @moduletag :capture_log
@@ -38,6 +39,20 @@ defmodule Tunez.Accounts.UserTest do
 
       {:ok, %{id: ^user_id}} =
         AshAuthentication.subject_to_user(subject, resource)
+    end
+
+    test "policy" do
+      eml = Faker.Internet.email()
+      password = Faker.Internet.slug()
+      password_confirm = password
+
+      {:error, %Forbidden{}} =
+        Ash.Changeset.for_create(
+          User,
+          :register_with_password,
+          %{email: eml, password: password, password_confirmation: password_confirm}
+        )
+        |> Ash.create()
     end
   end
 end
