@@ -5,7 +5,7 @@ defmodule Tunez.Accounts do
   alias Tunez.Accounts.User
 
   json_api do
-    routees do
+    routes do
       base_route "/users", User do
         post :register_with_password, route: "/register"
       end
