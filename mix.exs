@@ -44,6 +44,8 @@ defmodule Tunez.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bcrypt_elixir, "~> 3.0"},
+      {:picosat_elixir, "~> 0.2"},
       {:ash_authentication, "~> 4.0"},
       {:absinthe_phoenix, "~> 2.0"},
       {:ash_graphql, "~> 1.0"},

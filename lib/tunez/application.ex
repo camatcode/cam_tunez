@@ -21,7 +21,8 @@ defmodule Tunez.Application do
       # Start to serve requests, typically the last entry
       TunezWeb.Endpoint,
       {Absinthe.Subscription, TunezWeb.Endpoint},
-      Batcher
+      Batcher,
+      {AshAuthentication.Supervisor, [otp_app: :tunez]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

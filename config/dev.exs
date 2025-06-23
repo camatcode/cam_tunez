@@ -83,4 +83,4 @@ config :tunez, TunezWeb.Endpoint,
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :tunez, dev_routes: true
+config :tunez, dev_routes: true, token_signing_secret: "QLbHAQiBZyN+LSq6Wx7sWdAj7u/TFzAj"
