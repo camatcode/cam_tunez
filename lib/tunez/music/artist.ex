@@ -1,4 +1,5 @@
 defmodule Tunez.Music.Artist do
+  @moduledoc "<p></p>"
   use Ash.Resource,
     otp_app: :tunez,
     domain: Tunez.Music,

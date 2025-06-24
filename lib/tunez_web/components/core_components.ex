@@ -190,31 +190,22 @@ defmodule TunezWeb.CoreComponents do
     """
   end
 
-  def button_styles(kind, inverse, size) do
-    theme =
-      case {kind, inverse} do
-        {"base", false} ->
-          "bg-gray-100"
+  def button_styles("base", false, size), do: button_style("bg-gray-100", size)
 
-        {"base", true} ->
-          "border border-gray-500 text-gray-600"
+  def button_styles("base", true, size), do: button_style("border border-gray-500 text-gray-600", size)
 
-        {"primary", false} ->
-          "bg-primary-600 hover:bg-primary-700 text-white"
+  def button_styles("primary", false, size), do: button_style("bg-primary-600 hover:bg-primary-700 text-white", size)
 
-        {"primary", true} ->
-          "border border-primary-700 text-primary-700 hover:bg-primary-50 font-semibold"
+  def button_styles("primary", true, size),
+    do: button_style("border border-primary-700 text-primary-700 hover:bg-primary-50 font-semibold", size)
 
-        {"error", false} ->
-          "bg-error-700 hover:bg-error-800 text-white"
+  def button_styles("error", false, size), do: button_style("bg-error-700 hover:bg-error-800 text-white", size)
 
-        {"error", true} ->
-          "text-error-600 underline"
+  def button_styles("error", true, size), do: button_style("text-error-600 underline", size)
 
-        _ ->
-          ""
-      end
+  def button_styles(_kind, _inverse, size), do: button_style("", size)
 
+  defp button_style(theme, size) do
     [
       "phx-submit-loading:opacity-75 rounded-lg font-medium leading-none inline-block",
       size == "md" && "py-3 px-5 text-sm",

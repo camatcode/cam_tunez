@@ -1,9 +1,10 @@
 defmodule Tunez.Music.Album do
+  @moduledoc "<p></p>"
   use Ash.Resource,
     otp_app: :tunez,
     domain: Tunez.Music,
     data_layer: AshPostgres.DataLayer,
-    extensions: [AshJsonApi.Resource],
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource],
     authorizers: [Ash.Policy.Authorizer]
 
   alias Tunez.Accounts.User
@@ -11,6 +12,18 @@ defmodule Tunez.Music.Album do
   alias Tunez.Music.Artist
 
   def next_year, do: Date.utc_today().year + 1
+
+  graphql do
+    type :artist
+
+    filterable_fields [
+      :name,
+      :year_released,
+      :cover_image_url,
+      :artist_id,
+      :updated_at
+    ]
+  end
 
   json_api do
     type "album"

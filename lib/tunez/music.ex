@@ -1,4 +1,5 @@
 defmodule Tunez.Music do
+  @moduledoc "<p></p>"
   use Ash.Domain, otp_app: :tunez, extensions: [AshGraphql.Domain, AshJsonApi.Domain, AshPhoenix]
 
   alias Tunez.Music.Album

@@ -1,4 +1,5 @@
 defmodule Tunez.Accounts do
+  @moduledoc "<p></p>"
   use Ash.Domain, otp_app: :tunez, extensions: [AshGraphql.Domain, AshJsonApi.Domain]
 
   alias Tunez.Accounts.Token

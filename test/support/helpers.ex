@@ -1,4 +1,5 @@
 defmodule Tunez.Support.Helpers do
+  @moduledoc false
   require Ash.Query
 
   @doc """

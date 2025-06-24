@@ -1,4 +1,5 @@
 defmodule TunezWeb.GraphqlSchema do
+  @moduledoc "<p></p>"
   use Absinthe.Schema
 
   use AshGraphql,
