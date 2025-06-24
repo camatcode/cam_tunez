@@ -94,10 +94,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 ### Chapter 7
 
 * It was far more effective to my learning style here to uncomment the test generator and provided tests and explore on my own here, rather than have a guide
-* I'm *positive* the generator is useful in a myriad of ways, but it felt very verbose, as if you had to make an entire test harness yourself.
-  * Because of that, I re-produced all the tests using `ex_machina` with `faker` - ignoring any benefit the generator may provide. 
-  * This also has a benefit, in my mind, of minimizing testing Ash with Ash, as a framework bug wouldn't necessarily surface doing so.
 * [ExUnit.setup/1](https://hexdocs.pm/ex_unit/main/ExUnit.Callbacks.html#setup/1) might be useful to prevent duplicating setup test code (had to uncomment a lot that could have just been a single setup call)
-
-
+* I'm *positive* the generator is useful in a myriad of ways, but it felt very verbose, as if you had to make an entire test harness yourself.
+  * Because of that, I re-produced all the tests using `ex_machina` with `faker` - ignoring any benefit the generator may provide.
 <!-- albums graphql? -->
