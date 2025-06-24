@@ -1,5 +1,5 @@
 defmodule Tunez.Accounts.Token do
-  @moduledoc "<p></p>"
+  @moduledoc Tunez.Doc.dummy()
   use Ash.Resource,
     otp_app: :tunez,
     domain: Tunez.Accounts,

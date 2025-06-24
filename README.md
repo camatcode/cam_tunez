@@ -38,6 +38,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 * **Misc. Style**: 
   * `render(assigns)` functions go at the bottom
       * I have no clue where I picked this style up, but I can't live without it.
+  * Allow app layout to take up the full width without a limit 
 * **Deps**: Added the following deps
 
 ```
@@ -97,4 +98,5 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
 * [ExUnit.setup/1](https://hexdocs.pm/ex_unit/main/ExUnit.Callbacks.html#setup/1) might be useful to prevent duplicating setup test code (had to uncomment a lot that could have just been a single setup call)
 * I'm *positive* the generator is useful in a myriad of ways, but it felt very verbose, as if you had to make an entire test harness yourself.
   * Because of that, I re-produced all the tests using `ex_machina` with `faker` - ignoring any benefit the generator may provide.
+
 <!-- albums graphql? -->

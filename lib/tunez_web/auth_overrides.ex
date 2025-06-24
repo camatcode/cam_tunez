@@ -1,5 +1,5 @@
 defmodule TunezWeb.AuthOverrides do
-  @moduledoc "<p></p>"
+  @moduledoc Tunez.Doc.dummy()
   use AshAuthentication.Phoenix.Overrides
 
   # configure your UI overrides here

@@ -27,7 +27,7 @@ defmodule TunezWeb.Graphql.UserTest do
   describe "mutations" do
     test "registerUser" do
       # TODO FIXME something is wrong here
-      assert {:ok, resp} =
+      assert {:ok, _resp} =
                """
                mutation registerUser($input: RegisterUserInput!) {
                  registerUser(input: $input) {

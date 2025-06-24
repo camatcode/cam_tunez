@@ -1,7 +1,7 @@
 defmodule Tunez.Accounts.UserTest do
   use Tunez.DataCase, async: false
 
-  alias Ash.Error.Forbidden
+  # alias Ash.Error.Forbidden
   alias Tunez.Accounts.User
 
   @moduletag :capture_log

@@ -10,7 +10,7 @@ defmodule Tunez.Accounts.User.Senders.SendMagicLinkEmail do
 
   alias Tunez.Mailer
 
-  @impl true
+  @impl AshAuthentication.Sender
   def send(user_or_email, token, _) do
     # if you get a user, its for a user that already exists.
     # if you get an email, then the user does not yet exist.

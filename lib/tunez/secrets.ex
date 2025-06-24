@@ -1,5 +1,5 @@
 defmodule Tunez.Secrets do
-  @moduledoc "<p></p>"
+  @moduledoc Tunez.Doc.dummy()
   use AshAuthentication.Secret
 
   alias Tunez.Accounts.User

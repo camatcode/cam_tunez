@@ -10,7 +10,7 @@ defmodule Tunez.Accounts.User.Senders.SendPasswordResetEmail do
 
   alias Tunez.Mailer
 
-  @impl true
+  @impl AshAuthentication.Sender
   def send(user, token, _) do
     new()
     |> from({"noreply", "noreply@example.com"})

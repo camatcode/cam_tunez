@@ -3,7 +3,7 @@ defmodule TunezWeb.Albums.FormLiveTest do
 
   alias Ash.Error.Forbidden
   alias Tunez.Music, warn: false
-  alias Tunez.Music.Artist
+#  alias Tunez.Music.Artist
 
   describe "creating a new album" do
     test "errors for forbidden users", %{conn: conn} do
@@ -85,7 +85,7 @@ defmodule TunezWeb.Albums.FormLiveTest do
       end)
     end
 
-    test "succeeds when valid details are entered", %{conn: conn} do
+    test "succeeds when valid details are entered", %{conn: _conn} do
       # TODO FIXME, something is wrong here
       #      album = generate(album(name: "Old Name"))
       #

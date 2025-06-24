@@ -14,7 +14,7 @@ defmodule TunezWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <div class="w-full max-w-6xl m-auto">
+    <div class="w-full m-auto">
       <div class="flex items-center w-full p-4 pb-2 border-b-2 border-primary-600">
         <div class="flex-1 mr-4">
           <.link navigate={~p"/"}>

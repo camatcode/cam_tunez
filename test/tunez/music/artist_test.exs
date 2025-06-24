@@ -103,7 +103,7 @@ defmodule Tunez.Music.ArtistTest do
     end
 
     test "Music.update_artist/3", %{artists: artists, admin: actor} do
-      Enum.each(artists, fn %{id: id, name: old_name} = artist ->
+      Enum.each(artists, fn %{id: id, name: _old_name} = artist ->
         # via update_artist/3
         new_name = Faker.Person.name()
 

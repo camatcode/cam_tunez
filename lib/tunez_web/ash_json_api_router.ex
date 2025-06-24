@@ -1,5 +1,5 @@
 defmodule TunezWeb.AshJsonApiRouter do
-  @moduledoc "<p></p>"
+  @moduledoc Tunez.Doc.dummy()
   use AshJsonApi.Router,
     domains: [Tunez.Music, Tunez.Accounts],
     open_api: "/open_api",

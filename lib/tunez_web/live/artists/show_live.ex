@@ -161,20 +161,6 @@ defmodule TunezWeb.Artists.ShowLive do
     """
   end
 
-  defp formatted(nil), do: ""
-
-  defp formatted(text) when is_binary(text) do
-    text
-    |> String.split("\n", trim: false)
-    |> Enum.intersperse(Phoenix.HTML.raw({:safe, "<br/>"}))
-  end
-
-  defp get_artist(%{id: artist_id}, actor), do: get_artist(artist_id, actor)
-
-  defp get_artist(artist_id, actor) do
-    Music.get_artist_by_id!(artist_id, load: [:albums], actor: actor)
-  end
-
   def follow_toggle(assigns) do
     event =
       if assigns.on do
@@ -194,5 +180,19 @@ defmodule TunezWeb.Artists.ShowLive do
       />
     </span>
     """
+  end
+
+  defp formatted(nil), do: ""
+
+  defp formatted(text) when is_binary(text) do
+    text
+    |> String.split("\n", trim: false)
+    |> Enum.intersperse(Phoenix.HTML.raw({:safe, "<br/>"}))
+  end
+
+  defp get_artist(%{id: artist_id}, actor), do: get_artist(artist_id, actor)
+
+  defp get_artist(artist_id, actor) do
+    Music.get_artist_by_id!(artist_id, load: [:albums], actor: actor)
   end
 end

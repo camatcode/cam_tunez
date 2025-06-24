@@ -6,6 +6,10 @@ defmodule TunezWeb.NotificationsLive do
     {:ok, assign(socket, notifications: notifications)}
   end
 
+  def handle_event("dismiss-notification", %{"id" => _id}, socket) do
+    {:noreply, socket}
+  end
+
   def render(assigns) do
     ~H"""
     <div class="relative">
@@ -54,9 +58,5 @@ defmodule TunezWeb.NotificationsLive do
       </div>
     </div>
     """
-  end
-
-  def handle_event("dismiss-notification", %{"id" => _id}, socket) do
-    {:noreply, socket}
   end
 end
