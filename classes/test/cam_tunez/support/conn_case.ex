@@ -26,8 +26,8 @@ defmodule TunezWeb.ConnCase do
       import Phoenix.ConnTest, except: [get: 3, delete: 3]
       import PhoenixTest
       import Plug.Conn
-      import Tunez.Factory
       import Tunez.Generator
+      import Tunez.Factory
       import Tunez.Support.Helpers
       import TunezWeb.ConnCase
       # The default endpoint for testing
