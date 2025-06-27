@@ -9,7 +9,7 @@ defmodule TunezWeb.JsonApi.CamAlbumTest do
     setup do
       admin = build(:registered_user, role: :admin, insert?: true)
       artist = build(:artist, insert?: true)
-      album = build(:album, artist_id: artist.id, insert?: true)
+      album = build(:album, artist_id: artist.id, year_released: 1990, insert?: true)
       %{admin: admin, artist: artist, album: album}
     end
 
@@ -31,6 +31,24 @@ defmodule TunezWeb.JsonApi.CamAlbumTest do
       |> assert_data_matches(%{
         "attributes" => %{"name" => ^album_name}
       })
+    end
+
+    test desc(:read), %{artist: artist, admin: actor, album: album} do
+      album_2 = build(:album, artist_id: artist.id, year_released: 1970, insert?: true)
+
+      a_1_name = album.name
+      a_2_name = album_2.name
+
+      get(
+        Tunez.Music,
+        "/artists/#{artist.id}/albums",
+        router: TunezWeb.AshJsonApiRouter,
+        status: 200
+      )
+      |> assert_data_matches([
+        %{"attributes" => %{"name" => ^a_1_name}},
+        %{"attributes" => %{"name" => ^a_2_name}}
+      ])
     end
 
     test desc(:update), %{admin: actor, album: album} do
