@@ -25,6 +25,7 @@ defmodule Tunez.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Tunez.DataCase
+      import Tunez.Factory
       import Tunez.Generator
       import Tunez.Support.Helpers
 

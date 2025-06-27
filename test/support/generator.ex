@@ -35,7 +35,7 @@ defmodule Tunez.Generator do
 
     after_action =
       if opts[:track_count] do
-        fn album ->
+        fn _album ->
           raise "Uncomment the `track_count` after action for the album generator in `test/support/generator.ex` (and remove this line)"
           # generate_many(track(seed?: true, album_id: album.id), opts[:track_count])
           # Ash.load!(album, :tracks)
@@ -142,7 +142,7 @@ defmodule Tunez.Generator do
   - `:album_id` - Specify the album ID for the track
 
   """
-  def track(opts \\ []) do
+  def track(_opts \\ []) do
     raise "not yet"
     #    actor = opts[:actor] || once(:default_actor, fn -> generate(user(role: :admin)) end)
     #    album_id = opts[:album_id] || once(:default_album_id, fn -> generate(album()).id end)

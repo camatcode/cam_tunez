@@ -32,7 +32,7 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
       normal `sudo apt-get install watchman`
     * *Trust me*, All other options are a nightmare (*cos I tried them all*)
 * **TDD Preference**:
-    * Created ExUnit tests instead of running examples in iex (put under `cam tests`)
+    * Created ExUnit tests instead of running examples in iex (separated under `cam_tests`)
     * This is addressed in *Chapter 7: All About Testing*; but honestly, you could have started with testing first, I'd
       be fine.
 * **Misc. Style**: 
@@ -50,6 +50,8 @@ Clone of sevenseacats's `tunez`, following the [Ash Framework](https://pragprog.
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       # opinionated styler
       {:quokka, "~> 2.7", only: [:dev, :test], runtime: false},
+      # see discussion about testing
+      {:ex_machina, "~> 2.8.0", only: :test},
       # for fuzzing input to my added tests
       {:faker, "~> 0.18.0", only: :test},
 ```

@@ -13,6 +13,7 @@ defmodule Tunez.Music.Album do
 
   def next_year, do: Date.utc_today().year + 1
 
+
   graphql do
     type :artist
 

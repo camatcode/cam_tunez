@@ -59,4 +59,6 @@ defmodule Tunez.Support.Helpers do
       "[phx-click='#{event_name}']"
     end
   end
+
+  def desc(base), do: " > #{base}"
 end

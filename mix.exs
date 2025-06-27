@@ -35,7 +35,8 @@ defmodule Tunez.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:quokka, "~> 2.7", only: [:dev, :test], runtime: false},
-      {:faker, "~> 0.18.0", only: :test}
+      {:faker, "~> 0.18", only: :test},
+      {:ex_machina, "~> 2.8", only: :test}
     ]
   end
 
