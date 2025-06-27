@@ -90,6 +90,11 @@ defmodule Tunez.Music.Artist do
     end
   end
 
+  changes do
+    change relate_actor(:created_by, allow_nil?: true), on: [:create]
+    change relate_actor(:updated_by, allow_nil?: true)
+  end
+
   attributes do
     uuid_primary_key :id
 

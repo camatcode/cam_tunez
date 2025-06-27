@@ -8,7 +8,7 @@ defmodule TunezWeb.Music.AlbumTest do
 
   describe "Tunez.Music.create_album/1-2" do
     test "stores the actor that created the record" do
-      actor = generate(user(role: :admin)) |> IO.inspect()
+      actor = generate(user(role: :admin))
       artist = generate(artist())
 
       album =

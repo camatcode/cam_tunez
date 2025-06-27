@@ -8,7 +8,7 @@ defmodule TunezWeb.Music.CamArtistTest do
 
   @moduletag :capture_log
 
-  describe desc(:iex_tests) do
+  describe desc(:iex) do
     setup do
       actor = build(:registered_user, role: :admin, insert?: true)
 
@@ -131,5 +131,155 @@ defmodule TunezWeb.Music.CamArtistTest do
     end
   end
 
-  
+  describe desc(:crud) do
+    setup do
+      actor = build(:registered_user, role: :admin, insert?: true)
+      name = Faker.Lorem.sentence()
+      {:ok, artist} = Music.create_artist(%{name: name}, actor: actor)
+      %{admin: actor, artist: artist}
+    end
+
+    test desc(:create), %{admin: actor, artist: artist} do
+      assert artist.created_by_id == actor.id
+      assert artist.updated_by_id == actor.id
+    end
+
+    test desc(:update), %{admin: actor, artist: artist} do
+      first_name = artist.name
+      assert artist.previous_names == []
+
+      second_name = Faker.Lorem.sentence()
+      artist = Music.update_artist!(artist, %{name: second_name}, actor: actor)
+      [^first_name] = artist.previous_names
+
+      third_name = Faker.Lorem.sentence()
+      artist = Music.update_artist!(artist, %{name: third_name}, actor: actor)
+      [^second_name, ^first_name] = artist.previous_names
+
+      artist = Music.update_artist!(artist, %{name: first_name}, actor: actor)
+      [^third_name, ^second_name] = artist.previous_names
+
+      assert artist.updated_by_id == actor.id
+    end
+
+    test desc(:cover_image_url), %{artist: artist} do
+      build(:album, artist_id: artist.id, year_released: 2021, insert?: true)
+
+      build(:album,
+        artist_id: artist.id,
+        year_released: 2019,
+        cover_image_url: "/images/older.jpg",
+        insert?: true
+      )
+
+      build(:album,
+        artist_id: artist.id,
+        year_released: 2020,
+        cover_image_url: "/images/the_real_cover.png",
+        insert?: true
+      )
+
+      {:ok, artist} = Ash.load(artist, :cover_image_url)
+      assert artist.cover_image_url == "/images/the_real_cover.png"
+    end
+  end
+
+  test desc(:policies) do
+    admin = build(:registered_user, role: :admin, insert?: true)
+    editor = build(:registered_user, role: :editor, insert?: true)
+    user = build(:registered_user, insert?: true)
+    artist = build(:artist, insert?: true)
+
+    assert Music.can_create_artist?(admin)
+    refute Music.can_create_artist?(editor)
+    refute Music.can_create_artist?(user)
+    refute Music.can_create_artist?(nil)
+
+    assert Music.can_update_artist?(admin, artist)
+    assert Music.can_update_artist?(editor, artist)
+    refute Music.can_update_artist?(user, artist)
+    refute Music.can_update_artist?(nil, artist)
+
+    assert Music.can_destroy_artist?(admin, artist)
+    refute Music.can_destroy_artist?(editor, artist)
+    refute Music.can_destroy_artist?(user, artist)
+    refute Music.can_destroy_artist?(nil, artist)
+  end
+
+  describe desc(:search) do
+    def names(page), do: Enum.map(page.results, & &1.name)
+
+    test desc(:filter_partial_name) do
+      ["hello", "goodbye", "what?"]
+      |> Enum.each(&build(:artist, name: &1, insert?: true))
+
+      assert Enum.sort(names(Music.search_artists!("o"))) == ["goodbye", "hello"]
+      assert names(Music.search_artists!("oo")) == ["goodbye"]
+      assert names(Music.search_artists!("he")) == ["hello"]
+    end
+
+    test desc(:sort_by_name) do
+      ["first", "third", "fourth", "second"]
+      |> Enum.each(&build(:artist, name: &1, insert?: true))
+
+      actual = names(Music.search_artists!("", query: [sort_input: "+name"]))
+      assert actual == ["first", "fourth", "second", "third"]
+    end
+
+    test desc(:sort_by_insert) do
+      generate(artist(seed?: true, name: "first", inserted_at: ago(30, :second)))
+      generate(artist(seed?: true, name: "third", inserted_at: ago(10, :second)))
+      generate(artist(seed?: true, name: "second", inserted_at: ago(20, :second)))
+
+      actual = names(Music.search_artists!("", query: [sort_input: "-inserted_at"]))
+      assert actual == ["third", "second", "first"]
+    end
+
+    test desc(:sort_by_update) do
+      generate(artist(seed?: true, name: "first", updated_at: ago(30, :second)))
+      generate(artist(seed?: true, name: "third", updated_at: ago(10, :second)))
+      generate(artist(seed?: true, name: "second", updated_at: ago(20, :second)))
+
+      ["third", "second", "first"] =
+        names(Music.search_artists!("", query: [sort_input: "-updated_at"]))
+    end
+
+    test desc(:sort_by_album_release) do
+      first = build(:artist, name: "first", insert?: true)
+
+      _album_1 =
+        build(:album, artist_id: first.id, year_released: 2023, insert?: true)
+
+      second = build(:artist, name: "second", insert?: true)
+      _album_2 = build(:album, artist_id: second.id, year_released: 2012, insert?: true)
+      third = build(:artist, name: "third", insert?: true)
+      _album_3 = build(:album, artist_id: third.id, year_released: 2008, insert?: true)
+
+      ["first", "second", "third" | _] =
+        names(Music.search_artists!("", query: [sort_input: "--latest_album_year_released"]))
+    end
+
+    test desc(:sort_by_num_albums) do
+      two = build(:artist, name: "two", insert?: true)
+      _two_albums = build_list(2, :album, artist_id: two.id, insert?: true)
+      one = build(:artist, name: "one", insert?: true)
+      _one_albums = build(:album, artist_id: one.id, insert?: true)
+      three = build(:artist, name: "three", insert?: true)
+      _three_albums = build_list(3, :album, artist_id: three.id, insert?: true)
+
+      ["three", "two", "one" | _] =
+        names(Music.search_artists!("", query: [sort_input: "-album_count"]))
+    end
+
+    test desc(:paginate) do
+      build_list(2, :artist, insert?: true)
+      page = Music.search_artists!("", page: [limit: 1])
+      assert length(page.results) == 1
+      assert page.more?
+
+      next_page = Ash.page!(page, :next)
+      assert length(page.results) == 1
+      refute next_page.more?
+    end
+  end
 end

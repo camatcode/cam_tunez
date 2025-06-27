@@ -124,14 +124,15 @@ defmodule Tunez.Music.ArtistTest do
     end
 
     test "stores the actor that updated the record" do
-      # FIXME TODO Something is wrong here
       actor = generate(user(role: :admin))
 
       artist = generate(artist(name: "First Name"))
       refute artist.updated_by_id == actor.id
 
-      #  artist = Music.update_artist!(artist, %{name: "Second Name"}, actor: actor, load: [:updated_by])
-      #   assert artist.updated_by_id == actor.id
+      artist =
+        Music.update_artist!(artist, %{name: "Second Name"}, actor: actor, load: [:updated_by])
+
+      assert artist.updated_by_id == actor.id
     end
   end
 
@@ -205,7 +206,6 @@ defmodule Tunez.Music.ArtistTest do
       refute Music.can_destroy_artist?(nil, artist)
     end
 
-    @tag skip: "Also uncomment the `setup_users` function above"
     test "admins and editors can update artists" do
       users = setup_users()
       artist = generate(artist())

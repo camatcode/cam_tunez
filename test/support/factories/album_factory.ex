@@ -19,7 +19,7 @@ defmodule Tunez.Factory.AlbumFactory do
         artist_id = build(:artist, insert?: true).id
 
         %{
-          name: Faker.Lorem.sentence(1)<> "_#{System.monotonic_time()}",
+          name: Faker.Lorem.sentence(1) <> "_#{System.monotonic_time()}",
           year_released: year_released,
           artist_id: artist_id
         }
