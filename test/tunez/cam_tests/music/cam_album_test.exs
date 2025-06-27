@@ -33,4 +33,50 @@ defmodule TunezWeb.Music.CamAlbumTest do
       assert album.updated_by_id == actor.id
     end
   end
+
+  describe desc(:policies) do
+    setup do
+      %{
+        admin: build(:registered_user, role: :admin, insert?: true),
+        editor: build(:registered_user, role: :editor, insert?: true),
+        user: build(:registered_user, insert?: true),
+        album: build(:album, insert?: true)
+      }
+    end
+
+    test desc(:crud_policies), %{
+      admin: admin,
+      editor: editor,
+      user: user,
+      album: album
+    } do
+      # create
+      assert Music.can_create_album?(admin)
+      assert Music.can_create_album?(editor)
+      refute Music.can_create_album?(user)
+      refute Music.can_create_album?(nil)
+
+      # update
+      assert Music.can_update_album?(admin, album)
+      refute Music.can_update_album?(user, album)
+      refute Music.can_update_album?(nil, album)
+
+      # destroy
+      assert Music.can_destroy_album?(admin, album)
+      refute Music.can_destroy_album?(user, album)
+      refute Music.can_destroy_album?(nil, album)
+    end
+
+    test desc(:editor_policy), %{
+      editor: editor,
+      album: cant_edit
+    } do
+      can_edit = build(:album, actor: editor, insert?: true)
+      assert Music.can_update_album?(editor, can_edit)
+      refute Music.can_update_album?(editor, cant_edit)
+
+      assert Music.can_destroy_album?(editor, can_edit)
+      refute Music.can_destroy_album?(editor, cant_edit)
+    end
+  end
 end

@@ -18,12 +18,12 @@ defmodule Tunez.Factory.ArtistFactory do
         |> merge_attributes(attrs)
         |> evaluate_lazy_attributes()
         |> then(&Ash.Changeset.for_create(Artist, :create, &1))
-        |> do_insert?(insert?, actor)
+        |> do_insert_artist?(insert?, actor)
       end
 
-      defp do_insert?(changeset, true, actor), do: Ash.create!(changeset, authorize?: false, actor: actor)
+      defp do_insert_artist?(changeset, true, actor), do: Ash.create!(changeset, authorize?: false, actor: actor)
 
-      defp do_insert?(changeset, _, _), do: changeset
+      defp do_insert_artist?(changeset, _, _), do: changeset
     end
   end
 end

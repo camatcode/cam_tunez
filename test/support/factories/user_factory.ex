@@ -3,7 +3,6 @@ defmodule Tunez.Factory.UserFactory do
 
   defmacro __using__(_opts) do
     quote do
-
       alias Tunez.Accounts.User
 
       def registered_user_factory(attrs) do
@@ -23,12 +22,12 @@ defmodule Tunez.Factory.UserFactory do
         |> merge_attributes(attrs)
         |> evaluate_lazy_attributes()
         |> then(&Ash.Changeset.for_create(User, :register_with_password, &1))
-        |> do_insert?(insert?)
+        |> do_insert_user?(insert?)
         |> handle_role(role)
       end
 
-      defp do_insert?(changeset, true), do: Ash.create!(changeset, authorize?: false)
-      defp do_insert?(changeset, _), do: changeset
+      defp do_insert_user?(changeset, true), do: Ash.create!(changeset, authorize?: false)
+      defp do_insert_user?(changeset, _), do: changeset
 
       defp handle_role(obj, :user), do: obj
 
