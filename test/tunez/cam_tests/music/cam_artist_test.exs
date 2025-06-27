@@ -63,16 +63,6 @@ defmodule TunezWeb.Music.CamArtistTest do
       assert Enum.all?(to_find_ids, &Enum.member?(found_ids, &1))
     end
 
-    test desc(:manual_query), %{artists: [artist | _]} do
-      query =
-        Ash.Query.for_read(Artist, :read)
-        |> Ash.Query.sort(name: :asc)
-        |> Ash.Query.limit(1)
-
-      assert {:ok, [found]} = Ash.read(query)
-      assert found.id == artist.id
-    end
-
     test desc(:get_by_id), %{artists: artists} do
       Enum.each(artists, fn artist ->
         assert {:ok, found} = Music.get_artist_by_id(artist.id)

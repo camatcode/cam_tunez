@@ -27,6 +27,7 @@ defmodule TunezWeb.ConnCase do
       import PhoenixTest
       import Plug.Conn
       import Tunez.Generator
+      import Tunez.Factory
       import Tunez.Support.Helpers
       import TunezWeb.ConnCase
       # The default endpoint for testing
