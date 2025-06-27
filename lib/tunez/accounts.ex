@@ -6,6 +6,10 @@ defmodule Tunez.Accounts do
   alias Tunez.Accounts.User
 
   graphql do
+    mutations do
+      create User, :register_user, :register_with_password
+    end
+
     queries do
       get User, :sign_in_user, :sign_in_with_password do
         identity false

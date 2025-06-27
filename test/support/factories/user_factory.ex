@@ -6,7 +6,7 @@ defmodule Tunez.Factory.UserFactory do
       alias Tunez.Accounts.User
 
       def registered_user_factory(attrs) do
-        password = Faker.Lorem.sentence()
+        password = attrs[:password] || Faker.Lorem.sentence()
         role = Map.get(attrs, :role, :user)
         insert? = Map.get(attrs, :insert?, false)
 

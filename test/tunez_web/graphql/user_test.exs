@@ -26,8 +26,7 @@ defmodule TunezWeb.Graphql.UserTest do
 
   describe "mutations" do
     test "registerUser" do
-      # TODO FIXME something is wrong here
-      assert {:ok, _resp} =
+      assert {:ok, resp} =
                """
                mutation registerUser($input: RegisterUserInput!) {
                  registerUser(input: $input) {
@@ -47,10 +46,10 @@ defmodule TunezWeb.Graphql.UserTest do
                  }
                )
 
-      #      data = resp.data["registerUser"]
-      #      assert Enum.empty?(data["errors"])
-      #      assert data["metadata"]["token"] != nil
-      #      assert data["result"]["id"] != nil
+      data = resp.data["registerUser"]
+      assert Enum.empty?(data["errors"])
+      assert data["metadata"]["token"] != nil
+      assert data["result"]["id"] != nil
     end
   end
 end
