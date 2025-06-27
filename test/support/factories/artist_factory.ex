@@ -15,7 +15,7 @@ defmodule Tunez.Factory.ArtistFactory do
           |> Map.delete(:insert?)
           |> Map.delete(:actor)
 
-        %{name: Faker.App.name(), biography: Faker.Lorem.paragraph()}
+        %{name: Faker.Lorem.words() |> Enum.join(" "), biography: Faker.Lorem.paragraph()}
         |> merge_attributes(attrs)
         |> evaluate_lazy_attributes()
         |> do_insert_artist?(insert?, actor)
