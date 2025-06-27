@@ -16,9 +16,10 @@ defmodule Tunez.Factory.AlbumFactory do
           |> Map.delete(:actor)
 
         year_released = Enum.random(1951..2024)
-        artist_id = build(:artist, insert?: true).id |> IO.inspect(label: :a_id)
+        artist_id = build(:artist, insert?: true).id
+
         %{
-          name: Faker.Lorem,
+          name: Faker.Lorem.sentence(1)<> "_#{System.monotonic_time()}",
           year_released: year_released,
           artist_id: artist_id
         }

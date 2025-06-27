@@ -3,6 +3,7 @@ defmodule Tunez.Factory.ArtistFactory do
 
   defmacro __using__(_opts) do
     quote do
+      alias Tunez.Music
       alias Tunez.Music.Artist
 
       def artist_factory(attrs) do
@@ -17,13 +18,17 @@ defmodule Tunez.Factory.ArtistFactory do
         %{name: Faker.App.name(), biography: Faker.Lorem.paragraph()}
         |> merge_attributes(attrs)
         |> evaluate_lazy_attributes()
-        |> then(&Ash.Changeset.for_create(Artist, :create, &1))
         |> do_insert_artist?(insert?, actor)
       end
 
-      defp do_insert_artist?(changeset, true, actor), do: Ash.create!(changeset, authorize?: false, actor: actor)
+      defp do_insert_artist?(params, true, actor) do
+        Music.create_artist!(
+          params,
+          actor: actor
+        )
+      end
 
-      defp do_insert_artist?(changeset, _, _), do: changeset
+      defp do_insert_artist?(params, _, _), do: params
     end
   end
 end
