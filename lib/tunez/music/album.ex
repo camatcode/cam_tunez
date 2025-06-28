@@ -10,6 +10,7 @@ defmodule Tunez.Music.Album do
   alias Tunez.Accounts.User
   alias Tunez.Music.Album
   alias Tunez.Music.Artist
+  alias Tunez.Music.Track
 
   def next_year, do: Date.utc_today().year + 1
 
@@ -43,10 +44,15 @@ defmodule Tunez.Music.Album do
 
     create :create do
       accept [:name, :year_released, :cover_image_url, :artist_id]
+      argument :tracks, {:array, :map}
+      change manage_relationship(:tracks, type: :direct_control)
     end
 
     update :update do
       accept [:name, :year_released, :cover_image_url]
+      require_atomic? false
+      argument :tracks, {:array, :map}
+      change manage_relationship(:tracks, type: :direct_control)
     end
   end
 
@@ -117,6 +123,10 @@ defmodule Tunez.Music.Album do
 
     belongs_to :created_by, User
     belongs_to :updated_by, User
+
+    has_many :tracks, Track do
+      sort order: :asc
+    end
   end
 
   calculations do

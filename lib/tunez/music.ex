@@ -4,6 +4,7 @@ defmodule Tunez.Music do
 
   alias Tunez.Music.Album
   alias Tunez.Music.Artist
+  alias Tunez.Music.Track
 
   graphql do
     queries do
@@ -66,5 +67,7 @@ defmodule Tunez.Music do
       define :update_album, action: :update
       define :destroy_album, action: :destroy
     end
+
+    resource Track
   end
 end
