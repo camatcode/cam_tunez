@@ -49,13 +49,13 @@ defmodule TunezWeb.Artists.CamFormLiveTest do
     end
 
     test desc(:create), %{conn: _conn, admin: _user} do
-#      log_in_user(conn, user)
-#      |> visit(~p"/artists/new")
-#      |> fill_in("Name", with: "Temperance")
-#      |> click_button("Save")
-#      |> assert_has(flash(:info), text: "Artist saved successfully")
-#
-#      assert get_by_name(Artist, "Temperance")
+      #      log_in_user(conn, user)
+      #      |> visit(~p"/artists/new")
+      #      |> fill_in("Name", with: "Temperance")
+      #      |> click_button("Save")
+      #      |> assert_has(flash(:info), text: "Artist saved successfully")
+      #
+      #      assert get_by_name(Artist, "Temperance")
     end
   end
 end

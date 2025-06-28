@@ -5,7 +5,7 @@ defmodule Tunez.Music.ArtistTest do
 
   # alias Ash.Error.Changes.Required
   # alias Ash.Error.Invalid
- # alias Tunez.Accounts.User
+  # alias Tunez.Accounts.User
   alias Tunez.Music, warn: false
   #  alias Tunez.Music.Artist
 
