@@ -98,7 +98,7 @@ defmodule TunezWeb.Albums.FormLiveTest do
       #  |> assert_has(flash(:info), text: "Album saved successfully")
       # TODO something is wrong here
       album = Music.get_album_by_id!(album.id)
-    #  assert album.name == "New Name"
+      #  assert album.name == "New Name"
     end
 
     @tag skip: "Also need to change `_conn` to `conn` below"

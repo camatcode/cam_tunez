@@ -3,11 +3,11 @@ defmodule Tunez.Music.ArtistTest do
 
   import Tunez.Generator
 
-  alias Ash.Error.Changes.Required
-  alias Ash.Error.Invalid
-  alias Tunez.Accounts.User
+  # alias Ash.Error.Changes.Required
+  # alias Ash.Error.Invalid
+ # alias Tunez.Accounts.User
   alias Tunez.Music, warn: false
-  alias Tunez.Music.Artist
+  #  alias Tunez.Music.Artist
 
   describe "Tunez.Music.read_artists!/0-2" do
     test "when there is no data, nothing is returned" do

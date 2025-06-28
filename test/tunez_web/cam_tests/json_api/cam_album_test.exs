@@ -33,7 +33,7 @@ defmodule TunezWeb.JsonApi.CamAlbumTest do
       })
     end
 
-    test desc(:read), %{artist: artist, admin: actor, album: album} do
+    test desc(:read), %{artist: artist, album: album} do
       album_2 = build(:album, artist_id: artist.id, year_released: 1970, insert?: true)
 
       a_1_name = album.name

@@ -98,7 +98,6 @@ defmodule TunezWeb.Graphql.CamArtistTest do
 
     test desc(:update), %{
       admin: actor,
-      artist: artist,
       update: %{payload: payload, variables: variables, artist_name: artist_name}
     } do
       {:ok,
@@ -114,7 +113,6 @@ defmodule TunezWeb.Graphql.CamArtistTest do
           variables: variables,
           context: %{actor: actor}
         )
-        |> IO.inspect()
     end
 
     test desc(:destroy), %{admin: actor, artist: artist} do

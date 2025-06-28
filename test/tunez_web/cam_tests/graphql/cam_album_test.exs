@@ -73,7 +73,6 @@ defmodule TunezWeb.Graphql.CamAlbumTest do
           variables: variables,
           context: %{actor: actor}
         )
-        |> IO.inspect()
     end
 
     test desc(:destroyAlbum), %{admin: actor, album: album} do

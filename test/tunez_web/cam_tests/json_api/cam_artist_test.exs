@@ -37,7 +37,7 @@ defmodule TunezWeb.JsonApi.CamArtistTest do
       end)
     end
 
-    test desc(:search), %{artists: artists} do
+    test desc(:search), _state do
       data =
         get(
           Tunez.Music,
