@@ -21,7 +21,8 @@ defmodule Tunez.Factory.AlbumFactory do
         %{
           name: Faker.Lorem.sentence(1) <> "_#{System.monotonic_time()}",
           year_released: year_released,
-          artist_id: artist_id
+          artist_id: artist_id,
+          tracks: 1..10 |> Enum.map(fn track_index -> build(:track, order: track_index) end)
         }
         |> merge_attributes(attrs)
         |> evaluate_lazy_attributes()

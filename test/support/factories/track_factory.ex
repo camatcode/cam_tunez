@@ -1,18 +1,22 @@
-defmodule Tunez.Factory.ArtistFactory do
+defmodule Tunez.Factory.TrackFactory do
   @moduledoc false
 
   defmacro __using__(_opts) do
     quote do
-      def album_factory(attrs) do
-      insert? = Map.get(attrs, :insert?, false)
-      
+      def track_factory(attrs) do
+        attrs =
+          Map.delete(attrs, :role)
+          |> Map.delete(:insert?)
+          |> Map.delete(:actor)
 
-      attrs =
-        Map.delete(attrs, :role)
-        |> Map.delete(:insert?)
-        |> Map.delete(:actor)
-        end
-
+        %{
+          order: Enum.random(1..10),
+          name: Faker.Lorem.sentence(),
+          duration_seconds: Enum.random(1..100)
+        }
+        |> merge_attributes(attrs)
+        |> evaluate_lazy_attributes()
+      end
     end
   end
 end
