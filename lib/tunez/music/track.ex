@@ -1,8 +1,10 @@
 defmodule Tunez.Music.Track do
+  @moduledoc Tunez.Doc.dummy()
   use Ash.Resource,
     otp_app: :tunez,
     domain: Tunez.Music,
-    data_layer: AshPostgres.DataLayer
+    data_layer: AshPostgres.DataLayer,
+    authorizers: [Ash.Policy.Authorizer]
 
   alias Tunez.Music.Album
 
@@ -29,6 +31,17 @@ defmodule Tunez.Music.Track do
     end
   end
 
+  policies do
+    policy always() do
+      authorize_if accessing_from(Album, :tracks)
+      authorize_if action_type(:read)
+    end
+  end
+
+  preparations do
+    prepare build(load: [:number])
+  end
+
   attributes do
     uuid_primary_key :id
 
@@ -53,5 +66,9 @@ defmodule Tunez.Music.Track do
     belongs_to :album, Album do
       allow_nil? false
     end
+  end
+
+  calculations do
+    calculate :number, :integer, expr(order + 1)
   end
 end

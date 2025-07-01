@@ -32,20 +32,18 @@ defmodule TunezWeb.Artists.FormLive do
   end
 
   def handle_event("save", %{"form" => form_data}, socket) do
-    socket =
-      case AshPhoenix.Form.submit(socket.assigns.form, params: form_data) do
-        {:ok, artist} ->
-          socket
-          |> put_flash(:info, "Artist saved successfully")
-          |> push_navigate(to: ~p"/artists/#{artist}")
+    case AshPhoenix.Form.submit(socket.assigns.form, params: form_data) do
+      {:ok, artist} ->
+        socket
+        |> put_flash(:info, "Artist saved successfully")
+        |> push_navigate(to: ~p"/artists/#{artist}")
 
-        {:error, form} ->
-          socket
-          |> put_flash(:error, "Failed to save artist")
-          |> assign(:form, form)
-      end
-
-    {:noreply, socket}
+      {:error, form} ->
+        socket
+        |> put_flash(:error, "Failed to save artist")
+        |> assign(:form, form)
+    end
+    |> then(&{:noreply, &1})
   end
 
   def render(assigns) do
